@@ -28,6 +28,7 @@ function showView(id) {
   if (id === 'purgatorio')  renderPurgatorio();
   if (id === 'config')      loadConfig();
   if (id === 'fossilized')  renderFossilized();
+  if (id === 'grafo')       window.renderGraph?.();
 }
 
 // ── i18n ─────────────────────────────────────────────────────────────────────
@@ -252,11 +253,19 @@ async function loadRecentActivity() {
       const lower = line.toLowerCase();
       const cls = (lower.includes('erro') || lower.includes('fatal') || lower.includes('[f') && lower.includes('erro')) ? 'error'
         : (lower.includes('aviso') || lower.includes('warn')) ? 'warn' : 'ok';
-      return `<div class="activity-item">
-        <span class="activity-dot" style="background:${colors[cls]}"></span>
-        <div class="activity-body">
-          <span class="activity-text">${esc(line.replace(/^.*?\]\s*/,''))}</span>
+      
+      let notePath = '';
+      const match = line.match(/\]\s([a-zA-Z0-9_\-\s/\\]+\.md)/);
+      if (match) notePath = match[1];
+      
+      return `<div class="activity-item" style="justify-content: space-between; align-items: center;">
+        <div style="display: flex; gap: 8px; align-items: flex-start; flex: 1;">
+          <span class="activity-dot" style="background:${colors[cls]}; margin-top: 4px;"></span>
+          <div class="activity-body">
+            <span class="activity-text">${esc(line.replace(/^.*?\]\s*/,''))}</span>
+          </div>
         </div>
+        ${notePath ? `<button class="btn-obsidian" style="padding: 2px 6px; font-size: 10px;" onclick="window.zelador.openInObsidian('${notePath.replace(/\\/g, '/')}')">Abrir</button>` : ''}
       </div>`;
     }).join('');
   } catch (e) { console.error('getLogs:', e); }
@@ -284,10 +293,13 @@ async function renderFossilized() {
       <div class="fossil-item">
         <div class="fossil-header-row">
           <span class="fossil-name">${esc(note.fileName)}</span>
-          <span class="fossil-date">${esc(note.fossilizedAt)}</span>
+          <span class="fossil-date">${esc(note.date || note.fossilizedAt)}</span>
         </div>
         <p class="fossil-summary">${note.summary ? esc(note.summary) : `<em>${t('fossil.noSummary')}</em>`}</p>
-        <span class="fossil-path">${esc(note.month)}</span>
+        <div class="fossil-actions">
+          <span class="fossil-path">/_fossilized/${esc(note.month)}/</span>
+          <button class="btn-obsidian" onclick="window.zelador.openInObsidian('${note.filePath.replace(/\\/g, '/')}')">Abrir no Obsidian</button>
+        </div>
       </div>
     `).join('');
   } catch (e) {
@@ -336,7 +348,10 @@ function renderPurgatorio() {
       <td class="note-path">${esc(it.pasta)}</td>
       <td>${esc(it.dissolve)}</td>
       <td><span class="badge-decay ${badge}">${it.dias} dia${it.dias !== 1 ? 's' : ''}</span></td>
-      <td><button class="btn-immunize" data-nota="${esc(it.nota)}">Imunizar</button></td>
+      <td style="display: flex; gap: 8px;">
+        <button class="btn-obsidian" onclick="window.zelador.openInObsidian('${(it.pasta + '/' + it.nota).replace(/\\/g, '/')}.md')">Abrir</button>
+        <button class="btn-immunize" data-nota="${esc(it.nota)}">Imunizar</button>
+      </td>
     </tr>`;
   }).join('');
 

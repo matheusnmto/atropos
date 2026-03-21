@@ -440,8 +440,25 @@ body { display: flex; flex-direction: column; height: 100vh; }
 }
 .fossil-name    { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
 .fossil-date    { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
-.fossil-summary { font-size: 12px; color: var(--text-tertiary); font-style: italic; margin-bottom: 4px; }
+.fossil-summary { font-size: 12px; color: var(--text-tertiary); font-style: italic; margin-bottom: 8px; }
 .fossil-path    { font-size: 10px; color: var(--text-disabled); font-family: var(--font-mono); }
+.fossil-actions { display: flex; justify-content: space-between; align-items: center; }
+
+/* ══════════ BOTÕES ESPECIAIS ═══════════════════════════════════════════ */
+.btn-obsidian {
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 0.5px solid rgba(29,158,117,0.3);
+  background: transparent;
+  color: var(--color-vital);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-obsidian:hover {
+  background: rgba(29,158,117,0.1);
+  border-color: var(--color-vital);
+}
 
 /* ══════════ CONFIGURAÇÕES ══════════════════════════════════════════════ */
 .settings-screen { max-width: 640px; }

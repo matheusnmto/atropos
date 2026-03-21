@@ -34,6 +34,8 @@ contextBridge.exposeInMainWorld('zelador', {
     return () => ipcRenderer.removeListener('zelador:status-change', handler);
   },
 
-  // ─── Fossilizadas ─────────────────────────────────────────────────────────
+  // ─── Integração externa ───────────────────────────────────────────────────
   getFossilized: () => ipcRenderer.invoke('fossilized:list'),
+  openInObsidian: (filePath) => ipcRenderer.invoke('obsidian:open', filePath),
+  getGraphData: () => ipcRenderer.invoke('graph:data'),
 });

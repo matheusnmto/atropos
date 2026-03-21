@@ -45,7 +45,7 @@ function sleep(ms) {
 async function callGoogle(content, apiKey, isRetry = false) {
   const { GoogleGenerativeAI } = require('@google/generative-ai');
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
   try {
     const result = await withTimeout(
@@ -133,7 +133,7 @@ async function callAnthropic(content, apiKey, isRetry = false) {
 */
 function listProviders() {
   return [
-    { id: 'google',    name: 'Google Gemini',    model: 'gemini-1.5-flash',         costPer1kTokens: 0.000075 },
+    { id: 'google',    name: 'Google Gemini',    model: 'gemini-2.5-flash',         costPer1kTokens: 0.000075 },
     { id: 'anthropic', name: 'Anthropic Claude', model: 'claude-haiku-4-5-20251001', costPer1kTokens: 0.00025  },
   ];
 }

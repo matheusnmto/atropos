@@ -11,6 +11,7 @@ const translations = {
     'nav.dashboard':   'Dashboard',
     'nav.purgatory':   'Purgatório',
     'nav.fossilized':  'Fossilizadas',
+    'nav.grafo':       'Grafo',
     'nav.settings':    'Configurações',
 
     // Dashboard
@@ -48,6 +49,9 @@ const translations = {
     'fossil.desc':       'Notas comprimidas por IA e arquivadas em ',
     'fossil.empty':      'Nenhuma nota fossilizada ainda.',
     'fossil.noSummary':  '(sem resumo registrado)',
+
+    // Grafo
+    'graph.title':       'Grafo Interativo',
 
     // Configurações
     'cfg.title':         'Configurações',
@@ -118,6 +122,7 @@ const translations = {
     'nav.dashboard':   'Dashboard',
     'nav.purgatory':   'Purgatory',
     'nav.fossilized':  'Fossilized',
+    'nav.grafo':       'Graph',
     'nav.settings':    'Settings',
 
     // Dashboard
@@ -155,6 +160,9 @@ const translations = {
     'fossil.desc':       'Notes compressed by AI and archived in ',
     'fossil.empty':      'No fossilized notes yet.',
     'fossil.noSummary':  '(no summary recorded)',
+
+    // Grafo
+    'graph.title':       'Interactive Graph',
 
     // Settings
     'cfg.title':         'Settings',

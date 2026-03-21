@@ -139,6 +139,12 @@
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 2a4 4 0 110 8A4 4 0 018 4z" opacity=".5"/><circle cx="8" cy="8" r="2"/></svg>
           <span data-i18n="nav.fossilized">Fossilizadas</span>
         </a>
+        <a class="nav-item" data-view="grafo" id="nav-grafo">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <circle cx="4" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="4" r="2"/><line x1="5" y1="5" x2="11" y2="11" stroke="currentColor"/><line x1="12" y1="6" x2="12" y2="10" stroke="currentColor"/>
+          </svg>
+          <span data-i18n="nav.grafo">Grafo Interativo</span>
+        </a>
         <a class="nav-item" data-view="config" id="nav-config">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/><path fill-rule="evenodd" d="M6.94 1h2.12l.4 2a5.5 5.5 0 011.42.83l1.9-.72 1.06 1.84-1.52 1.28a5.5 5.5 0 010 1.54l1.52 1.28-1.06 1.84-1.9-.72a5.5 5.5 0 01-1.42.83l-.4 2H6.94l-.4-2a5.5 5.5 0 01-1.42-.83l-1.9.72L2.16 9.77l1.52-1.28a5.5 5.5 0 010-1.54L2.16 5.67 3.22 3.83l1.9.72A5.5 5.5 0 016.54 3l.4-2z"/></svg>
           <span data-i18n="nav.settings">Configurações</span>
@@ -161,12 +167,12 @@
       <section class="view active" id="view-dashboard">
         <div class="screen-header">
           <div>
-            <h1 class="text-title-lg">Dashboard</h1>
+            <h1 class="text-title-lg" data-i18n="nav.dashboard">Dashboard</h1>
             <p class="text-caption" id="dash-subtitle">carregando vault...</p>
           </div>
           <button class="btn-run" id="btn-run-now">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l9 4.5-9 4.5z"/></svg>
-            Executar agora
+            <span data-i18n="dash.runNow">Executar agora</span>
           </button>
         </div>
 
@@ -175,20 +181,20 @@
           <div class="dashboard-left">
             <div class="metrics-grid">
               <div class="metric-card">
-                <span class="metric-label">Total de notas</span>
+                <span class="metric-label" data-i18n="dash.totalNotes">Total de notas</span>
                 <span class="metric-value" id="m-total">—</span>
               </div>
               <div class="metric-card">
-                <span class="metric-label">Ativas</span>
+                <span class="metric-label" data-i18n="dash.active">Ativas</span>
                 <span class="metric-value" id="m-alive" style="color:var(--color-vital)">—</span>
                 <span class="metric-sub" id="m-alive-pct"></span>
               </div>
               <div class="metric-card">
-                <span class="metric-label">Em decaimento</span>
+                <span class="metric-label" data-i18n="dash.decaying">Em decaimento</span>
                 <span class="metric-value" id="m-decaying" style="color:var(--color-desconexao)">—</span>
               </div>
               <div class="metric-card">
-                <span class="metric-label">Fossilizadas</span>
+                <span class="metric-label" data-i18n="dash.fossilized">Fossilizadas</span>
                 <span class="metric-value" id="m-fossil" style="color:var(--color-fossil)">—</span>
               </div>
             </div>
@@ -196,7 +202,7 @@
             <!-- Barra de saúde -->
             <div class="vault-health">
               <div class="vault-health-header">
-                <span class="text-label">saúde do vault</span>
+                <span class="text-label" data-i18n="dash.vaultHealth">saúde do vault</span>
                 <span class="text-caption" id="health-pct" style="color:var(--color-vital)">—</span>
               </div>
               <div class="decay-bar" id="healthBar"></div>
@@ -206,9 +212,9 @@
 
           <!-- Atividade recente -->
           <div class="activity-panel">
-            <h2 class="text-label" style="margin-bottom:12px">atividade recente</h2>
+            <h2 class="text-label" style="margin-bottom:12px" data-i18n="dash.activity">atividade recente</h2>
             <div class="activity-list" id="activityList">
-              <div class="activity-empty">Nenhuma atividade ainda.</div>
+              <div class="activity-empty" data-i18n="dash.noActivity">Nenhuma atividade ainda.</div>
             </div>
           </div>
         </div>
@@ -218,8 +224,8 @@
       <section class="view" id="view-purgatorio">
         <div class="screen-header">
           <div>
-            <h1 class="text-title-lg">Purgatório</h1>
-            <p class="text-caption">Notas condenadas à dissolução. Abra uma no Obsidian para resetar o decaimento.</p>
+            <h1 class="text-title-lg" data-i18n="purg.title">Purgatório</h1>
+            <p class="text-caption" data-i18n="purg.desc">Notas condenadas à dissolução. Abra uma no Obsidian para resetar o decaimento.</p>
           </div>
         </div>
 
@@ -231,15 +237,15 @@
         <table class="purgatory-table">
           <thead>
             <tr>
-              <th>Nota</th>
-              <th>Pasta</th>
-              <th>Dissolução</th>
-              <th>Restam</th>
+              <th data-i18n="purg.colNote">Nota</th>
+              <th data-i18n="purg.colFolder">Pasta</th>
+              <th data-i18n="purg.colDissol">Dissolução</th>
+              <th data-i18n="purg.colRemain">Restam</th>
               <th></th>
             </tr>
           </thead>
           <tbody id="purgatory-tbody">
-            <tr><td colspan="5" class="table-empty">Nenhuma nota no purgatório.</td></tr>
+            <tr><td colspan="5" class="table-empty" data-i18n="purg.empty">Nenhuma nota no purgatório.</td></tr>
           </tbody>
         </table>
       </section>
@@ -247,11 +253,22 @@
       <!-- ─── FOSSILIZADAS ───────────────────────────────────────────────── -->
       <section class="view" id="view-fossilized">
         <div class="screen-header">
-          <h1 class="text-title-lg">Fossilizadas</h1>
+          <h1 class="text-title-lg" data-i18n="fossil.title">Fossilizadas</h1>
         </div>
-        <p class="text-body" style="margin-bottom:20px">Notas comprimidas por IA e arquivadas em <code class="inline-code">/_fossilized/</code>. Somente leitura.</p>
+        <p class="text-body" style="margin-bottom:20px"><span data-i18n="fossil.desc">Notas comprimidas por IA e arquivadas em</span> <code class="inline-code">/_fossilized/</code>. Somente leitura.</p>
         <div class="fossil-list" id="fossilized-list">
-          <div class="activity-empty">Nenhuma nota fossilizada ainda.</div>
+          <div class="activity-empty" data-i18n="fossil.empty">Nenhuma nota fossilizada ainda.</div>
+        </div>
+      </section>
+
+      <!-- ─── GRAFO ───────────────────────────────────────────────────────── -->
+      <section class="view" style="padding: 0; display: flex; flex-direction: column;" id="view-grafo">
+        <div class="screen-header" style="padding: 24px 32px 0;">
+          <h1 class="text-title-lg" data-i18n="graph.title">Grafo Interativo</h1>
+        </div>
+        <div id="graph-container" style="flex: 1; width: 100%; height: 100%; overflow: hidden; position: relative;">
+          <!-- tooltip -->
+          <div id="graph-tooltip" style="position:absolute; display:none; background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border-subtle); padding:6px 10px; border-radius:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
         </div>
       </section>
 
@@ -428,7 +445,9 @@
 
 </div><!-- /screen-app -->
 
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="i18n.js"></script>
 <script src="app.js"></script>
+<script src="graph.js"></script>
 </body>
 </html>

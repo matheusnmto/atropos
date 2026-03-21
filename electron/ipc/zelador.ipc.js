@@ -131,6 +131,24 @@ function register(ipcMain, getStatusFn, runNowFn, store) {
     }
   });
 
+  // ── Integração Obsidian ──────────────────────────────────────────────────
+  ipcMain.handle('obsidian:open', async (_, filePath) => {
+    if (!store) return { success: false, error: 'No store' };
+    const vaultPath = store.get('vaultPath');
+    if (!vaultPath) return { success: false, error: 'Vault não configurado' };
+
+    const { shell } = require('electron');
+    const vaultName = path.basename(vaultPath);
+    // Removemos a extensão .md e montamos relative path
+    const relative = path.relative(vaultPath, filePath)
+      .replace(/\\/g, '/')
+      .replace(/\.md$/, '');
+    
+    const uri = `obsidian://open?vault=${encodeURIComponent(vaultName)}&file=${encodeURIComponent(relative)}`;
+    await shell.openExternal(uri);
+    return { success: true };
+  });
+
   // ── Fix 2: lista notas fossilizadas reais de _fossilized/ ────────────────
   ipcMain.handle('fossilized:list', () => {
     if (!store) return [];
@@ -178,6 +196,66 @@ function register(ipcMain, getStatusFn, runNowFn, store) {
     }
 
     return results.sort((a, b) => b.fossilizedAt.localeCompare(a.fossilizedAt));
+  });
+
+  // ── Grafo Visual STUB (D3) ────────────────────────────────────────────────
+  ipcMain.handle('graph:data', async () => {
+    if (!store) return { nodes: [], edges: [] };
+    const vaultPath = store.get('vaultPath');
+    if (!vaultPath) return { nodes: [], edges: [] };
+
+    const fs = require('fs');
+    const path = require('path');
+    const matter = require('gray-matter');
+    const { globSync } = require('glob');
+
+    try {
+      const files = globSync('**/*.md', {
+        cwd: vaultPath,
+        ignore: ['_fossilized/**', '.zelador/**', 'node_modules/**', '**/.*/**'],
+      });
+
+      const nodes = [];
+      const edges = [];
+      const nameMap = {};
+
+      for (const f of files) {
+        const fp = path.join(vaultPath, f);
+        const content = fs.readFileSync(fp, 'utf-8');
+        const { data } = matter(content);
+        const name = path.basename(f, '.md');
+        nameMap[name] = f;
+        
+        let phase = 'alive';
+        if (data.status === 'fossilized') phase = 'fossil';
+        else if (data.decay_level === 3) phase = 'f3';
+        else if (data.decay_level === 2) phase = 'f2';
+        else if (data.decay_level === 1) phase = 'f1';
+
+        nodes.push({
+          id: f,
+          name,
+          phase,
+          immune: !!data.decay_immune,
+        });
+
+        // extrair wikilinks [[Nome]]
+        const links = [...content.matchAll(/\[\[([^\]|#^]+)/g)].map(m => m[1].trim());
+        for (const link of links) {
+          edges.push({ source: f, target: link });
+        }
+      }
+
+      // resolver edges pelo nome (wikilinks comumente não incluem caminho)
+      const resolved = edges
+        .filter(e => nameMap[e.target])
+        .map(e => ({ source: e.source, target: nameMap[e.target] }));
+
+      return { nodes, edges: resolved };
+    } catch (e) {
+      console.error('[ipc] Erro ao ler dados do grafo:', e);
+      return { nodes: [], edges: [] };
+    }
   });
 }
 
