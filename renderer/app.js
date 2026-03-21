@@ -18,7 +18,14 @@ function showScreen(id) {
   $(`screen-${id}`).classList.remove('hidden');
 }
 
+let _currentView = null;
+
 function showView(id) {
+  // Destruir grafo ao sair da aba
+  if (_currentView === 'grafo' && id !== 'grafo') {
+    if (window.destroyGraph) window.destroyGraph();
+  }
+
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const view = $(`view-${id}`);
@@ -28,7 +35,12 @@ function showView(id) {
   if (id === 'purgatorio')  renderPurgatorio();
   if (id === 'config')      loadConfig();
   if (id === 'fossilized')  renderFossilized();
-  if (id === 'grafo')       window.renderGraph?.();
+  if (id === 'grafo') {
+    // Pequeno delay para garantir que o container tenha dimensões
+    setTimeout(() => { if (window.initGraph) window.initGraph(); }, 50);
+  }
+
+  _currentView = id;
 }
 
 // ── i18n ─────────────────────────────────────────────────────────────────────
@@ -298,10 +310,18 @@ async function renderFossilized() {
         <p class="fossil-summary">${note.summary ? esc(note.summary) : `<em>${t('fossil.noSummary')}</em>`}</p>
         <div class="fossil-actions">
           <span class="fossil-path">/_fossilized/${esc(note.month)}/</span>
-          <button class="btn-obsidian" onclick="window.zelador.openInObsidian('${note.filePath.replace(/\\/g, '/')}')">Abrir no Obsidian</button>
+          <button class="btn-obsidian" data-filepath="${esc(note.filePath)}">Abrir no Obsidian</button>
         </div>
       </div>
     `).join('');
+
+    // Adiciona handlers de click APÓS renderizar (evita interpolação de paths no onclick)
+    container.querySelectorAll('.btn-obsidian[data-filepath]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const fp = btn.dataset.filepath;
+        await api.openInObsidian(fp);
+      });
+    });
   } catch (e) {
     console.error('renderFossilized:', e);
     container.innerHTML = '<div class="activity-empty">Erro ao carregar.</div>';
@@ -343,17 +363,23 @@ function renderPurgatorio() {
   tbody.innerHTML = items.map(it => {
     const rowCls = it.dias <= 7 ? 'row-urgent' : '';
     const badge  = it.dias <= 7 ? 'badge-f3' : it.dias <= 30 ? 'badge-f2' : 'badge-f1';
+    const notaPath = `${it.pasta}/${it.nota}.md`;
     return `<tr class="${rowCls}">
       <td class="note-link">[[${esc(it.nota)}]]</td>
       <td class="note-path">${esc(it.pasta)}</td>
       <td>${esc(it.dissolve)}</td>
       <td><span class="badge-decay ${badge}">${it.dias} dia${it.dias !== 1 ? 's' : ''}</span></td>
-      <td style="display: flex; gap: 8px;">
-        <button class="btn-obsidian" onclick="window.zelador.openInObsidian('${(it.pasta + '/' + it.nota).replace(/\\/g, '/')}.md')">Abrir</button>
+      <td>
+        <button class="btn-obsidian purg-obs" data-filepath="${esc(notaPath)}">Abrir</button>
         <button class="btn-immunize" data-nota="${esc(it.nota)}">Imunizar</button>
       </td>
     </tr>`;
   }).join('');
+
+  // Handlers para botões de imunizar e abrir no Obsidian
+  tbody.querySelectorAll('.purg-obs').forEach(btn => {
+    btn.addEventListener('click', () => api.openInObsidian(btn.dataset.filepath));
+  });
 
   // Delegated event para botões de imunizar
   tbody.querySelectorAll('.btn-immunize').forEach(btn => {

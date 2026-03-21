@@ -35,7 +35,7 @@ function createWindow() {
     height: 640,
     minWidth: 680,
     minHeight: 500,
-    title: 'Grafo Líquido',
+    title: 'liquid-graph',
     backgroundColor: '#161616',
     webPreferences: {
       preload:          path.join(__dirname, 'preload.js'),
@@ -58,6 +58,18 @@ function createWindow() {
   });
 
   mainWindow.on('closed', () => { mainWindow = null; });
+
+  // Permitir D3.js do jsdelivr CDN — CSP
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:"
+        ],
+      },
+    });
+  });
 }
 
 // ─── Agendamento ──────────────────────────────────────────────────────────

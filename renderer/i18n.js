@@ -98,7 +98,7 @@ const translations = {
     'status.next':    'Próxima: ',
 
     // Onboarding
-    'ob.welcome':    'Bem-vindo ao Grafo Líquido',
+    'ob.welcome':    'Bem-vindo ao liquid-graph',
     'ob.vaultDesc':  'Selecione a pasta do seu vault do Obsidian para começar.',
     'ob.noneSelected': 'Nenhuma pasta selecionada',
     'ob.selectBtn':  'Selecionar pasta',
@@ -110,7 +110,7 @@ const translations = {
     'ob.next':       'Próximo →',
     'ob.apiKeyH':    'Insira sua API key',
     'ob.apiKeyLabel':'Sua API key',
-    'ob.keyHint':    'A chave é armazenada no keychain do sistema. O Grafo Líquido nunca a envia a servidores próprios.',
+    'ob.keyHint':    'A chave é armazenada no keychain do sistema. O liquid-graph nunca a envia a servidores próprios.',
     'ob.validate':   'Validar e entrar',
     'ob.validating': 'Validando chave via API...',
     'ob.saving':     'Salvando no keychain...',
@@ -208,7 +208,7 @@ const translations = {
     'status.next':    'Next: ',
 
     // Onboarding
-    'ob.welcome':    'Welcome to Grafo Líquido',
+    'ob.welcome':    'Welcome to liquid-graph',
     'ob.vaultDesc':  'Select your Obsidian vault folder to get started.',
     'ob.noneSelected': 'No folder selected',
     'ob.selectBtn':  'Select folder',

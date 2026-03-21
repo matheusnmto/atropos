@@ -5,13 +5,13 @@
   "main": "electron/main.js",
   "license": "MIT",
   "scripts": {
-    "start":     "electron .",
-    "dev":       "electron . --dev",
-    "build":     "electron-builder --mac",
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --mac",
     "build:all": "electron-builder -mwl",
-    "dist":      "electron-builder",
-    "dist:all":  "electron-builder --mac --win --linux",
-    "zelador":   "node zelador/zelador.js"
+    "dist": "electron-builder",
+    "dist:all": "electron-builder --mac --win --linux",
+    "zelador": "node zelador/zelador.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   },
   "build": {
     "appId": "com.grafoliquido.app",
-    "productName": "Grafo Líquido",
+    "productName": "liquid-graph",
     "mac": {
       "category": "public.app-category.productivity",
       "icon": "assets/icon.icns",
@@ -61,7 +61,9 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "d3": "^7.9.0",
     "electron-store": "^6.0.1",
+    "gray-matter": "^4.0.3",
     "keytar": "^7.9.0"
   }
 }

@@ -51,7 +51,7 @@ function setupTray({ mainWindow, getStatus, nextRunAt, onRunNow, onQuit }) {
 
     return Menu.buildFromTemplate([
       {
-        label: 'Grafo Líquido',
+        label: 'liquid-graph',
         enabled: false,
         icon: icon.resize({ width: 16, height: 16 }),
       },

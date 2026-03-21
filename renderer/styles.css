@@ -281,10 +281,24 @@ body { display: flex; flex-direction: column; height: 100vh; }
 .status-next  { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
 
 /* ══════════ CONTENT ════════════════════════════════════════════════════ */
-.content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+}
 
 .view        { display: none; }
 .view.active { display: block; animation: fadeUp .18s ease; }
+
+/* A aba Grafo herda flex do pai e cancela o padding */
+#view-grafo.active {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: -24px -28px; /* cancela o padding da .content */
+}
 
 .screen-header {
   display: flex;
@@ -424,40 +438,69 @@ body { display: flex; flex-direction: column; height: 100vh; }
 .badge-fossil { background: rgba(68,68,65,0.25);    color: #888780; }
 
 /* ══════════ FOSSILIZADAS ═══════════════════════════════════════════════ */
-.fossil-list { display: flex; flex-direction: column; gap: 6px; }
+.fossil-list { display: flex; flex-direction: column; gap: 8px; }
 .fossil-item {
   background: var(--bg-surface);
-  border: 0.5px solid var(--border-subtle);
+  border: 0.5px solid rgba(255,255,255,0.07);
   border-left: 3px solid var(--color-fossil);
   border-radius: var(--radius-md);
-  padding: 12px 16px;
+  padding: 14px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .fossil-header-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+  gap: 12px;
 }
-.fossil-name    { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-.fossil-date    { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
-.fossil-summary { font-size: 12px; color: var(--text-tertiary); font-style: italic; margin-bottom: 8px; }
-.fossil-path    { font-size: 10px; color: var(--text-disabled); font-family: var(--font-mono); }
-.fossil-actions { display: flex; justify-content: space-between; align-items: center; }
+.fossil-name    { font-size: 13px; color: var(--text-primary); font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fossil-date    { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); flex-shrink: 0; }
+.fossil-summary {
+  font-size: 12px; color: var(--text-tertiary); font-style: italic;
+  margin-bottom: 10px; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.fossil-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px; margin-top: 8px; padding-top: 8px;
+  border-top: 0.5px solid rgba(255,255,255,0.05);
+}
+.fossil-path    { font-size: 10px; color: var(--text-disabled); font-family: var(--font-mono); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ══════════ BOTÕES ESPECIAIS ═══════════════════════════════════════════ */
 .btn-obsidian {
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 4px;
-  border: 0.5px solid rgba(29,158,117,0.3);
+  border: 0.5px solid rgba(29,158,117,0.35);
   background: transparent;
   color: var(--color-vital);
   font-size: 11px;
+  font-family: inherit;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s;
 }
-.btn-obsidian:hover {
-  background: rgba(29,158,117,0.1);
-  border-color: var(--color-vital);
+.btn-obsidian:hover  { background: rgba(29,158,117,0.12); border-color: var(--color-vital); }
+.btn-obsidian:active { transform: scale(0.97); }
+
+/* Célula de ações do Purgatório */
+.purgatory-table td:last-child {
+  width: 130px; text-align: right; white-space: nowrap;
+  display: flex; gap: 6px; justify-content: flex-end; align-items: center;
+}
+
+#graph-container {
+  flex: 1;
+  width: 100%;
+  background: #0a0f0c;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  min-height: 400px;
 }
 
 /* ══════════ CONFIGURAÇÕES ══════════════════════════════════════════════ */

@@ -204,54 +204,66 @@ function register(ipcMain, getStatusFn, runNowFn, store) {
     const vaultPath = store.get('vaultPath');
     if (!vaultPath) return { nodes: [], edges: [] };
 
-    const fs = require('fs');
-    const path = require('path');
+    const fs     = require('fs');
+    const path   = require('path');
     const matter = require('gray-matter');
-    const { globSync } = require('glob');
+
+    const IGNORED = new Set(['_fossilized', '.zelador', 'node_modules',
+                              'electron', 'renderer', '.obsidian', '.git',
+                              '__pycache__', '.DS_Store']);
+
+    function walk(dir, base) {
+      let result = [];
+      let entries;
+      try { entries = fs.readdirSync(dir); } catch { return result; }
+      for (const e of entries) {
+        if (IGNORED.has(e) || e.startsWith('.')) continue;
+        const full = path.join(dir, e);
+        try {
+          const stat = fs.statSync(full);
+          if (stat.isDirectory()) result = result.concat(walk(full, base));
+          else if (e.endsWith('.md')) result.push({ full, rel: path.relative(base, full) });
+        } catch { /* ignora */ }
+      }
+      return result;
+    }
 
     try {
-      const files = globSync('**/*.md', {
-        cwd: vaultPath,
-        ignore: ['_fossilized/**', '.zelador/**', 'node_modules/**', '**/.*/**'],
-      });
-
-      const nodes = [];
-      const edges = [];
+      const files  = walk(vaultPath, vaultPath);
+      const nodes  = [];
       const nameMap = {};
+      const edgeList = [];
 
-      for (const f of files) {
-        const fp = path.join(vaultPath, f);
-        const content = fs.readFileSync(fp, 'utf-8');
-        const { data } = matter(content);
-        const name = path.basename(f, '.md');
-        nameMap[name] = f;
-        
-        let phase = 'alive';
-        if (data.status === 'fossilized') phase = 'fossil';
-        else if (data.decay_level === 3) phase = 'f3';
-        else if (data.decay_level === 2) phase = 'f2';
-        else if (data.decay_level === 1) phase = 'f1';
+      for (const { full, rel } of files) {
+        let data = {}, content = '';
+        try {
+          const raw = fs.readFileSync(full, 'utf-8');
+          const parsed = matter(raw);
+          data = parsed.data || {};
+          content = parsed.content || '';
+        } catch { continue; }
 
-        nodes.push({
-          id: f,
-          name,
-          phase,
-          immune: !!data.decay_immune,
-        });
+        const name = path.basename(rel, '.md');
 
-        // extrair wikilinks [[Nome]]
-        const links = [...content.matchAll(/\[\[([^\]|#^]+)/g)].map(m => m[1].trim());
-        for (const link of links) {
-          edges.push({ source: f, target: link });
-        }
+        const phase =
+          data.status === 'fossilized' ? 'fossil' :
+          data.decay_level >= 3        ? 'f3'     :
+          data.decay_level === 2       ? 'f2'     :
+          data.decay_level === 1       ? 'f1'     : 'alive';
+
+        nodes.push({ id: rel, name, phase, immune: !!data.decay_immune, filePath: full });
+        nameMap[name.toLowerCase()] = rel;
+
+        const links = [...content.matchAll(/\[\[([^\]|#^]+)/g)].map(m => m[1].trim().toLowerCase());
+        for (const link of links) edgeList.push({ source: rel, targetName: link });
       }
 
-      // resolver edges pelo nome (wikilinks comumente não incluem caminho)
-      const resolved = edges
-        .filter(e => nameMap[e.target])
-        .map(e => ({ source: e.source, target: nameMap[e.target] }));
+      const edges = edgeList
+        .filter(e => nameMap[e.targetName] && nameMap[e.targetName] !== e.source)
+        .map(e => ({ source: e.source, target: nameMap[e.targetName] }));
 
-      return { nodes, edges: resolved };
+      console.log(`[graph] ${nodes.length} nós, ${edges.length} arestas`);
+      return { nodes, edges };
     } catch (e) {
       console.error('[ipc] Erro ao ler dados do grafo:', e);
       return { nodes: [], edges: [] };
