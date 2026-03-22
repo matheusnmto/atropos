@@ -68,29 +68,29 @@ async function analyzeConnections(vaultPath, files) {
   let modifiedCache = false;
   const embeddings = [];
 
-  for (const file of files) {
-    try {
-      const content = fs.readFileSync(file.filePath, 'utf8');
-      const key = getCacheKey(content);
-      
-      const relativePath = path.relative(vaultPath, file.filePath).replace(/\\/g, '/');
+  // Concorrência limitada: processa 4 notas em paralelo p/ não sobrecarregar Ollama
+  const CONCURRENCY = 4;
+  for (let start = 0; start < files.length; start += CONCURRENCY) {
+    const batch = files.slice(start, start + CONCURRENCY);
+    await Promise.all(batch.map(async (file) => {
+      try {
+        const content = fs.readFileSync(file.filePath, 'utf8');
+        const key = getCacheKey(content);
+        const relativePath = path.relative(vaultPath, file.filePath).replace(/\\/g, '/');
 
-      let vector;
-      if (cache[relativePath] && cache[relativePath].key === key) {
-        vector = cache[relativePath].vector;
-      } else {
-        vector = await getEmbedding(content);
-        cache[relativePath] = { key, vector };
-        modifiedCache = true;
+        let vector;
+        if (cache[relativePath] && cache[relativePath].key === key) {
+          vector = cache[relativePath].vector;
+        } else {
+          vector = await getEmbedding(content);
+          cache[relativePath] = { key, vector };
+          modifiedCache = true;
+        }
+        embeddings.push({ id: relativePath, vector });
+      } catch (err) {
+        log(`Erro no embedding de ${file.filePath}: ${err.message}`);
       }
-
-      // Format for the renderer must match IPC nodes IDs:
-      // The renderer uses standard ID like "/ideas/minha-nota.md" OR just "ideas/minha-nota.md". Wait, how does `zelador.ipc.js` handle node IDs?
-      // `id: path.relative(vaultPath, x).replace(/\\/g, '/')` -> Which is EXACTLY `relativePath`. No leading slash!
-      embeddings.push({ id: relativePath, vector });
-    } catch (err) {
-      log(`Erro no embedding de ${file.filePath}: ${err.message}`);
-    }
+    }));
   }
 
   if (modifiedCache) {
