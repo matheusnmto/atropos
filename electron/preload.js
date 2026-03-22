@@ -44,4 +44,9 @@ contextBridge.exposeInMainWorld('zelador', {
   getFossilized: () => ipcRenderer.invoke('fossilized:list'),
   openInObsidian: (filePath) => ipcRenderer.invoke('obsidian:open', filePath),
   getGraphData: () => ipcRenderer.invoke('graph:data'),
+
+  // ─── Semantic & Sync ───────────────────────────────────────────────────────
+  gitSync: () => ipcRenderer.invoke('git:sync'),
+  checkOllama: () => ipcRenderer.invoke('graph:check-ollama'),
+  analyzeSemantics: () => ipcRenderer.invoke('graph:analyze-semantics'),
 });

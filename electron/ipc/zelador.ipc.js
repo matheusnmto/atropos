@@ -274,6 +274,62 @@ function register(ipcMain, getStatusFn, runNowFn, store) {
       return { nodes: [], edges: [] };
     }
   });
+
+  // ── Git Sync Manual ──────────────────────────────────────────────────────
+  ipcMain.handle('git:sync', async () => {
+    if (!store) return { success: false, error: 'No store' };
+    const vaultPath = store.get('vaultPath');
+    if (!vaultPath) return { success: false, error: 'Vault não configurado' };
+
+    try {
+      const syncManager = require(path.join(__dirname, '../../zelador/modules/syncManager'));
+      
+      const pullRes = syncManager.pull(vaultPath);
+      if (!pullRes.success && !pullRes.skipped) {
+        return { success: false, error: pullRes.error || 'Erro no pull' };
+      }
+
+      const pushRes = syncManager.push(vaultPath);
+      if (!pushRes.success && !pushRes.skipped) {
+        return { success: false, error: pushRes.error || 'Erro no push' };
+      }
+
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  });
+
+  // ── Semantic Links (Ollama) ────────────────────────────────────────────────
+  ipcMain.handle('graph:check-ollama', async () => {
+    try {
+      const semanticLinks = require(path.join(__dirname, '../../zelador/modules/semanticLinks'));
+      return await semanticLinks.checkOllama();
+    } catch (e) {
+      return false;
+    }
+  });
+
+  ipcMain.handle('graph:analyze-semantics', async () => {
+    if (!store) return { success: false, error: 'No store' };
+    const vaultPath = store.get('vaultPath');
+    if (!vaultPath) return { success: false, error: 'Vault não configurado' };
+
+    try {
+      const semanticLinks = require(path.join(__dirname, '../../zelador/modules/semanticLinks'));
+      const isOllamaUp = await semanticLinks.checkOllama();
+      if (!isOllamaUp) return { success: false, error: 'Ollama is not running or missing nomic-embed-text.' };
+
+      const { scanVault } = require(path.join(__dirname, '../../zelador/modules/scanner'));
+      const files = await scanVault(vaultPath);
+
+      const connections = await semanticLinks.analyzeConnections(vaultPath, files);
+      return { success: true, connections };
+    } catch (e) {
+      console.error(e);
+      return { success: false, error: e.message };
+    }
+  });
 }
 
 module.exports = { register, runZeladorProcess };

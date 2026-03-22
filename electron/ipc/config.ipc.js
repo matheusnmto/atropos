@@ -30,8 +30,14 @@ module.exports = function registerConfigHandlers(store) {
   // ── Escrita de config ─────────────────────────────────────────────────────
   ipcMain.handle('config:set', (_event, updates) => {
     if (typeof updates !== 'object' || updates === null) return;
+    let scheduleChanged = false;
     for (const [key, value] of Object.entries(updates)) {
       store.set(key, value);
+      if (key === 'schedule') scheduleChanged = true;
+    }
+    if (scheduleChanged) {
+      const { app } = require('electron');
+      app.emit('zelador-schedule-changed');
     }
   });
 

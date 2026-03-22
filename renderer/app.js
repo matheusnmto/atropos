@@ -584,6 +584,41 @@ $('cfg-language')?.addEventListener('change', async (e) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
+// SYNC MANUAL
+// ══════════════════════════════════════════════════════════════════════════════
+$('btn-manual-sync')?.addEventListener('click', async () => {
+  const btn = $('btn-manual-sync');
+  btn.disabled = true;
+  const originalHtml = btn.innerHTML;
+  btn.textContent = window.i18n ? (window.i18n.t('status.loading') || 'Aguarde...') : 'Aguarde...';
+  
+  try {
+    const res = await api.gitSync();
+    if (res.success) {
+      btn.textContent = window.i18n ? (window.i18n.t('cfg.saved') || 'Salvo') : 'Salvo';
+      btn.style.backgroundColor = 'var(--color-vital)';
+      btn.style.borderColor = 'var(--color-vital)';
+      btn.style.color = '#fff';
+    } else {
+      btn.textContent = (window.i18n ? window.i18n.t('status.error') : 'Erro') + ': ' + (res.error || '');
+      btn.style.backgroundColor = 'var(--color-dissolucao)';
+      btn.style.borderColor = 'var(--color-dissolucao)';
+      btn.style.color = '#000';
+    }
+  } catch (e) {
+    btn.textContent = window.i18n ? window.i18n.t('status.error') : 'Erro crítico de Sync';
+  }
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+    btn.style.backgroundColor = '';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  }, 4500);
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════════════════
 async function initApp() {

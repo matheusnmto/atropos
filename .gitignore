@@ -1,6 +1,7 @@
 # Zelador
 zelador/node_modules/
 zelador/.env
+.zelador/embeddings.json
 
 # Obsidian
 .obsidian/workspace.json

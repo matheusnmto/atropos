@@ -97,9 +97,6 @@ async function main() {
   const config = loadConfig();
   log(`Configuração: ${Object.keys(config.folders || {}).length} pasta(s) configurada(s).`);
 
-  // ── Sincronização Remota (Pull) ──
-  syncManager.pull(VAULT_PATH);
-
   // ── Varre o vault ──
   log('Varrendo vault...');
   const files = await scanVault(VAULT_PATH);
@@ -228,9 +225,6 @@ async function main() {
   log(`  Erros:                      ${stats.errors}`);
   log('─────────────────────────────────────');
   log('Zelador finalizado.');
-
-  // ── Sincronização Remota (Push) ──
-  syncManager.push(VAULT_PATH);
 }
 
 main().catch((err) => {

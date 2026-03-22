@@ -78,6 +78,21 @@ liquid-graph/
 
 ## Installation
 
+### Semantic connections (optional)
+
+Grafo Líquido can discover thematic connections between notes
+using local AI embeddings via [Ollama](https://ollama.com).
+No data leaves your machine.
+
+Requirements:
+1. Install Ollama: https://ollama.com/download
+2. Pull the embedding model:
+   ollama pull nomic-embed-text
+3. In the app: Settings → Semantic connections → Ollama (local)
+
+The app detects Ollama automatically. If it is not running,
+clicking "Analyse connections" shows setup instructions inline.
+
 ### Desktop Application
 
 Download the installer for your operating system from [Releases](https://github.com/matheusnmto/liquid-graph/releases):

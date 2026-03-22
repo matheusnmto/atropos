@@ -186,6 +186,42 @@ async function initGraph() {
     .map(e => ({ source: nodeById[e.source], target: nodeById[e.target] }))
     .filter(e => e.source && e.target);
 
+  const semanticEdges = [];
+
+  const btnAnalyze = document.getElementById('btn-analyze-semantics');
+  if (btnAnalyze) {
+    btnAnalyze.addEventListener('click', async () => {
+      btnAnalyze.disabled = true;
+      const origText = btnAnalyze.innerText;
+      btnAnalyze.innerText = 'Analisando...';
+      try {
+        const res = await window.zelador.analyzeSemantics();
+        if (res.success && res.connections) {
+          console.log(`[semantic] ${res.connections.length} conexões semânticas descobertas`);
+          semanticEdges.length = 0;
+          for (const conn of res.connections) {
+            const sn = nodeById[conn.source];
+            const tn = nodeById[conn.target];
+            if (sn && tn) {
+              semanticEdges.push({ source: sn, target: tn, similarity: conn.similarity });
+            }
+          }
+          btnAnalyze.innerText = `${semanticEdges.length} Conexões Localizadas`;
+          setTimeout(() => btnAnalyze.innerText = origText, 3000);
+        } else {
+          btnAnalyze.innerText = 'Erro do Ollama';
+          console.error(res.error);
+          setTimeout(() => btnAnalyze.innerText = origText, 3000);
+        }
+      } catch (err) {
+        btnAnalyze.innerText = 'Falha crítica';
+        console.error(err);
+        setTimeout(() => btnAnalyze.innerText = origText, 3000);
+      }
+      btnAnalyze.disabled = false;
+    });
+  }
+
   // D3 force simulation
   simulation = d3.forceSimulation(nodes)
     .force('link', d3.forceLink(edges)
@@ -400,6 +436,23 @@ async function initGraph() {
         : 1.2 / transform.k;
       ctx.lineCap = 'round';
       ctx.stroke();
+    }
+
+    // Arestas Semânticas (tracejadas âmbar)
+    if (semanticEdges && semanticEdges.length > 0) {
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      for (const se of semanticEdges) {
+        const isHovered = hoveredNode && (se.source === hoveredNode || se.target === hoveredNode);
+        const alpha = isHovered ? 0.8 : Math.max(0.15, se.similarity - 0.5);
+        ctx.beginPath();
+        ctx.moveTo(se.source.x, se.source.y);
+        ctx.lineTo(se.target.x, se.target.y);
+        ctx.strokeStyle = `rgba(218, 165, 32, ${alpha})`;
+        ctx.lineWidth = (isHovered ? 2.0 : 1.0) / transform.k;
+        ctx.stroke();
+      }
+      ctx.restore();
     }
 
     // Nós

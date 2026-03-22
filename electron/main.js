@@ -164,6 +164,11 @@ app.whenReady().then(() => {
     if (!mainWindow) createWindow();
     else mainWindow.show();
   });
+
+  app.on('zelador-schedule-changed', () => {
+    console.log('[main] Reagendando Zelador baseado nas novas configurações...');
+    scheduleZelador();
+  });
 });
 
 app.on('window-all-closed', () => {}); // fica na tray

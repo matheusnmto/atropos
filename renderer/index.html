@@ -303,6 +303,11 @@
 
         <!-- ─── GRAFO ───────────────────────────────────────────────────────── -->
         <section class="view" id="view-grafo">
+          <button id="btn-analyze-semantics" style="position:absolute; bottom:40px; right:40px; z-index:100; background:rgba(20, 24, 22, 0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(29, 158, 117, 0.3); color:rgba(232, 230, 224, 0.9); box-shadow: 0 8px 32px rgba(0,0,0,0.6); padding: 8px 18px; border-radius: 30px; font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace; font-weight: 500; letter-spacing: 0.05em; cursor:pointer; pointer-events:auto; transition: all 0.2s ease; display:flex; align-items:center; gap:8px;">
+            <span style="display:inline-block; width:6px; height:6px; background:#1D9E75; border-radius:50%; box-shadow:0 0 8px #1D9E75;"></span>
+            <span data-i18n="graph.analyze">ANALISAR CONEXÕES</span>
+          </button>
+          
           <div id="graph-container">
             <!-- tooltip -->
             <div id="graph-tooltip"
@@ -467,6 +472,7 @@ git push -u origin main</pre>
                 <div style="background:#BA751722;border:1px solid #BA751766;color:#BA7517;padding:10px;border-radius:6px;font-size:12px;line-height:1.4;margin-top:4px;" data-i18n="cfg.syncWarning">
                   <strong>Repositório PRIVADO é fortemente recomendado</strong> — o vault contém notas pessoais e o conteúdo será enviado para o GitHub.
                 </div>
+                <button class="btn-primary" id="btn-manual-sync" data-i18n="cfg.syncNow" style="margin-top:8px;">Sincronizar Agora (Pull & Push)</button>
               </div>
             </section>
 

@@ -72,6 +72,7 @@ const translations = {
     'graph.error':       'Erro ao carregar grafo',
     'graph.empty':       'Nenhuma nota encontrada no vault.',
     'graph.immune':      'imune',
+    'graph.analyze':     'ANALISAR CONEXÕES',
     'graph.stats':       'notas &nbsp;&middot;&nbsp; conexões &nbsp;&middot;&nbsp; vivas &nbsp;&middot;&nbsp; decaindo &nbsp;&middot;&nbsp; fósseis',
     'phase.alive':       'VIVA',
     'phase.f1':          'F1 ESTIAGEM',
@@ -133,6 +134,7 @@ const translations = {
     'cfg.syncStep3':     'No segundo dispositivo, clonar o repositório como vault',
     'cfg.syncStep4':     'O Grafo Líquido detecta o remote automaticamente',
     'cfg.syncWarning':   '<strong>Repositório PRIVADO é fortemente recomendado</strong> — o vault contém notas pessoais e o conteúdo será enviado para o GitHub.',
+    'cfg.syncNow':       'Sincronizar Agora (Pull & Push)',
 
     // Status
     'status.idle':       'Zelador inativo',
@@ -235,6 +237,7 @@ const translations = {
     'graph.error':       'Error loading graph',
     'graph.empty':       'No notes found in the vault.',
     'graph.immune':      'immune',
+    'graph.analyze':     'ANALYZE CONNECTIONS',
     'graph.stats':       'notes &nbsp;&middot;&nbsp; connections &nbsp;&middot;&nbsp; alive &nbsp;&middot;&nbsp; decaying &nbsp;&middot;&nbsp; fossils',
     'phase.alive':       'ALIVE',
     'phase.f1':          'F1 DROUGHT',
@@ -296,6 +299,7 @@ const translations = {
     'cfg.syncStep3':     'On the second device, clone the repository as the vault',
     'cfg.syncStep4':     'Liquid Graph automatically detects the remote',
     'cfg.syncWarning':   '<strong>A PRIVATE repository is strongly recommended</strong> — the vault contains personal notes and content will be pushed to GitHub.',
+    'cfg.syncNow':       'Sync Now (Pull & Push)',
 
     // Status
     'status.idle':       'Zelador idle',
