@@ -170,9 +170,31 @@ function commitSnapshot(vaultPath, noteName, phase) {
   }
 }
 
+/**
+* Retorna o timestamp (ms) do último commit de um arquivo.
+* Útil para detectar inatividade real quando mtime foi resetado pelo Git.
+*
+* @param {string} vaultPath
+* @param {string} filePath - Caminho absoluto ou relativo ao vault
+* @returns {number|null} timestamp em ms ou null se falhar
+*/
+function getFileLastCommitDate(vaultPath, filePath) {
+  try {
+    const relPath = path.relative(vaultPath, filePath);
+    // %at = author date, unix timestamp
+    const output = execGit(['log', '-1', '--format=%at', '--', relPath], vaultPath);
+    const timestamp = parseInt(output);
+    return isNaN(timestamp) ? null : timestamp * 1000;
+  } catch (err) {
+    // Pode falhar se o arquivo não estiver no Git ainda
+    return null;
+  }
+}
+
 module.exports = {
   isGitRepo,
   checkCleanStatus,
   getLastCommitHash,
   commitSnapshot,
+  getFileLastCommitDate,
 };

@@ -44,7 +44,8 @@
         <p class="ob-desc" data-i18n="ob.vaultDesc">Selecione a pasta do seu vault do Obsidian para começar.</p>
 
         <div class="vault-picker">
-          <div class="vault-path-display" id="ob-vault-display" data-i18n="ob.noneSelected">Nenhuma pasta selecionada</div>
+          <div class="vault-path-display" id="ob-vault-display" data-i18n="ob.noneSelected">Nenhuma pasta selecionada
+          </div>
           <button class="btn-primary" id="ob-btn-pick" data-i18n="ob.selectBtn">Selecionar pasta</button>
         </div>
         <!-- Campo manual para colar o caminho -->
@@ -62,7 +63,8 @@
       <!-- Passo 2 -->
       <div class="onboarding-step" id="ob-step-2">
         <h2 data-i18n="ob.providerH">Escolha o provider de IA</h2>
-        <p class="ob-desc" data-i18n="ob.providerDesc">Usado na Fase 3 para comprimir notas. Você usará sua própria chave (BYOK).</p>
+        <p class="ob-desc" data-i18n="ob.providerDesc">Usado na Fase 3 para comprimir notas. Você usará sua própria
+          chave (BYOK).</p>
 
         <div class="provider-grid">
           <div class="provider-card selected" id="ob-card-anthropic" data-provider="anthropic">
@@ -97,7 +99,8 @@
           <input type="password" id="ob-api-key" placeholder="sk-ant-..." autocomplete="off" />
           <button id="ob-toggle-key" data-i18n="ob.show">mostrar</button>
         </div>
-        <p class="key-hint" data-i18n="ob.keyHint">A chave é armazenada no keychain do sistema. O Atropos nunca a envia a servidores
+        <p class="key-hint" data-i18n="ob.keyHint">A chave é armazenada no keychain do sistema. O Atropos nunca a envia
+          a servidores
           próprios.</p>
 
         <div id="ob-feedback" class="ob-feedback"></div>
@@ -131,19 +134,18 @@
       <div id="window-controls">
         <button id="btn-minimize" onclick="window.zelador.minimizeWindow()">
           <svg width="10" height="1" viewBox="0 0 10 1">
-            <line x1="0" y1="0.5" x2="10" y2="0.5" stroke="currentColor" stroke-width="1"/>
+            <line x1="0" y1="0.5" x2="10" y2="0.5" stroke="currentColor" stroke-width="1" />
           </svg>
         </button>
         <button id="btn-maximize" onclick="window.zelador.maximizeWindow()">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <rect x="0.5" y="0.5" width="9" height="9" fill="none"
-                  stroke="currentColor" stroke-width="1"/>
+            <rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1" />
           </svg>
         </button>
         <button id="btn-close" onclick="window.zelador.closeWindow()">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="1.2"/>
-            <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="1.2" />
+            <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="1.2" />
           </svg>
         </button>
       </div>
@@ -191,13 +193,12 @@
           </a>
           <a class="nav-item" data-view="insights" id="nav-insights">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="8" r="2" fill="currentColor"/>
-              <path d="M8 2v2M8 12v2M2 8h2M12 8h2" stroke="currentColor"
-                    stroke-width="1.2" stroke-linecap="round"/>
-              <path d="M4.1 4.1l1.4 1.4M10.5 10.5l1.4 1.4M4.1 11.9l1.4-1.4M10.5 5.5l1.4-1.4"
-                    stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <path d="M2 13v-2.5l2.5-2.5L7 10.5l4.5-4.5L14 8.5V13H2z" stroke="currentColor" stroke-width="1.2"
+                stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
+              <circle cx="11.5" cy="4.5" r="1.5" fill="currentColor" />
+              <path d="M8 2.5l1 1M13.5 8l1 1" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
             </svg>
-            <span data-i18n="nav.insights">Insights</span>
+            <span data-i18n="nav.insights">Signals</span>
           </a>
           <a class="nav-item" data-view="config" id="nav-config">
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -306,11 +307,11 @@
               </tr>
             </thead>
             <tbody id="purgatory-tbody">
-              <tr>
-                <td colspan="5" class="table-empty" data-i18n="purg.empty">Nenhuma nota no purgatório.</td>
-              </tr>
-            </tbody>
           </table>
+          <tr>
+
+          </tr>
+          </tbody>
         </section>
 
         <!-- ─── FOSSILIZADAS ───────────────────────────────────────────────── -->
@@ -319,7 +320,8 @@
             <h1 class="text-title-lg" data-i18n="fossil.title">Fossilizadas</h1>
           </div>
           <p class="text-body" style="margin-bottom:20px"><span data-i18n="fossil.desc">Notas comprimidas por IA e
-              arquivadas em</span> <code class="inline-code">/_fossilized/</code><span data-i18n="fossil.desc2">. Somente leitura.</span></p>
+              arquivadas em</span> <code class="inline-code">/_fossilized/</code><span data-i18n="fossil.desc2">.
+              Somente leitura.</span></p>
           <div class="fossil-list" id="fossilized-list">
             <div class="activity-empty" data-i18n="fossil.empty">Nenhuma nota fossilizada ainda.</div>
           </div>
@@ -327,11 +329,13 @@
 
         <!-- ─── GRAFO ───────────────────────────────────────────────────────── -->
         <section class="view" id="view-grafo" style="position:relative;">
-          <button id="btn-analyze-semantics" style="position:absolute; top:20px; left:20px; z-index:200; background:rgba(14,18,15,0.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(29,158,117,0.45); color:rgba(232,230,224,0.95); box-shadow:0 4px 20px rgba(0,0,0,0.7),0 0 0 1px rgba(29,158,117,0.1); padding:7px 16px; border-radius:20px; font-size:10.5px; font-family:'SF Mono','Fira Code',monospace; font-weight:600; letter-spacing:0.06em; cursor:pointer; pointer-events:auto; transition:all 0.18s ease; display:flex; align-items:center; gap:7px; white-space:nowrap;">
-            <span style="display:inline-block;width:5px;height:5px;background:#1D9E75;border-radius:50%;box-shadow:0 0 6px #1D9E75;flex-shrink:0;"></span>
+          <button id="btn-analyze-semantics"
+            style="position:absolute; top:20px; left:20px; z-index:200; background:rgba(14,18,15,0.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(29,158,117,0.45); color:rgba(232,230,224,0.95); box-shadow:0 4px 20px rgba(0,0,0,0.7),0 0 0 1px rgba(29,158,117,0.1); padding:7px 16px; border-radius:20px; font-size:10.5px; font-family:'SF Mono','Fira Code',monospace; font-weight:600; letter-spacing:0.06em; cursor:pointer; pointer-events:auto; transition:all 0.18s ease; display:flex; align-items:center; gap:7px; white-space:nowrap;">
+            <span
+              style="display:inline-block;width:5px;height:5px;background:#1D9E75;border-radius:50%;box-shadow:0 0 6px #1D9E75;flex-shrink:0;"></span>
             <span data-i18n="graph.analyze">ANALISAR CONEXÕES</span>
           </button>
-          
+
           <div id="graph-container">
             <!-- tooltip -->
             <div id="graph-tooltip"
@@ -349,8 +353,9 @@
             </div>
             <button class="btn-run" id="btn-refresh-insights">
               <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658a.25.25 0 0 1-.41-.192z"/>
+                <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                <path
+                  d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658a.25.25 0 0 1-.41-.192z" />
               </svg>
               <span data-i18n="insig.refresh">Atualizar</span>
             </button>
@@ -437,7 +442,8 @@
               <div class="settings-row" id="cfg-api-key-section">
                 <div class="settings-row-info">
                   <label data-i18n="cfg.apiKey">Chave de API</label>
-                  <p data-i18n="cfg.apiKeyDesc">Armazenada no keychain do sistema. Nunca enviada a servidores externos.</p>
+                  <p data-i18n="cfg.apiKeyDesc">Armazenada no keychain do sistema. Nunca enviada a servidores externos.
+                  </p>
                 </div>
                 <div class="settings-row-control">
                   <span class="key-status" id="cfg-key-status">verificando...</span>
@@ -508,12 +514,15 @@
             <section class="settings-section">
               <h2 class="settings-section-title" data-i18n="cfg.syncTitle">Sincronização (Dispositivos)</h2>
               <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
-                <p data-i18n="cfg.syncDesc" style="color:#5C5A56;font-size:13px;line-height:1.5;margin:0;">Para ativar o sync entre dispositivos:</p>
+                <p data-i18n="cfg.syncDesc" style="color:#5C5A56;font-size:13px;line-height:1.5;margin:0;">Para ativar o
+                  sync entre dispositivos:</p>
                 <ol style="color:#5C5A56;font-size:13px;line-height:1.5;margin:0;padding-left:16px;">
-                  <li data-i18n="cfg.syncStep1">Criar um repositório <strong>PRIVADO</strong> no GitHub para o vault</li>
+                  <li data-i18n="cfg.syncStep1">Criar um repositório <strong>PRIVADO</strong> no GitHub para o vault
+                  </li>
                   <li data-i18n="cfg.syncStep2">No terminal, dentro do vault:</li>
                 </ol>
-                <pre style="background:#1C1A17;padding:12px;border-radius:6px;font-family:monospace;font-size:11px;color:#1D9E75;margin:0;width:100%;box-sizing:border-box;">git init
+                <pre
+                  style="background:#1C1A17;padding:12px;border-radius:6px;font-family:monospace;font-size:11px;color:#1D9E75;margin:0;width:100%;box-sizing:border-box;">git init
 git remote add origin https://github.com/usuario/meu-vault.git
 git add -A && git commit -m "initial vault"
 git push -u origin main</pre>
@@ -521,16 +530,21 @@ git push -u origin main</pre>
                   <li data-i18n="cfg.syncStep3">No segundo dispositivo, clonar o repositório como vault</li>
                   <li data-i18n="cfg.syncStep4">O Grafo Líquido detecta o remote automaticamente</li>
                 </ol>
-                <div style="background:#BA751722;border:1px solid #BA751766;color:#BA7517;padding:10px;border-radius:6px;font-size:12px;line-height:1.4;margin-top:4px;" data-i18n="cfg.syncWarning">
-                  <strong>Repositório PRIVADO é fortemente recomendado</strong> — o vault contém notas pessoais e o conteúdo será enviado para o GitHub.
+                <div
+                  style="background:#BA751722;border:1px solid #BA751766;color:#BA7517;padding:10px;border-radius:6px;font-size:12px;line-height:1.4;margin-top:4px;"
+                  data-i18n="cfg.syncWarning">
+                  <strong>Repositório PRIVADO é fortemente recomendado</strong> — o vault contém notas pessoais e o
+                  conteúdo será enviado para o GitHub.
                 </div>
-                <button class="btn-primary" id="btn-manual-sync" data-i18n="cfg.syncNow" style="margin-top:8px;">Sincronizar Agora (Pull & Push)</button>
+                <button class="btn-primary" id="btn-manual-sync" data-i18n="cfg.syncNow"
+                  style="margin-top:8px;">Sincronizar Agora (Pull & Push)</button>
               </div>
             </section>
 
             <!-- Zona de risco -->
             <section class="settings-section">
-              <h2 class="settings-section-title" style="color:var(--color-dissolucao)" data-i18n="cfg.dangerZone">Zona de risco</h2>
+              <h2 class="settings-section-title" style="color:var(--color-dissolucao)" data-i18n="cfg.dangerZone">Zona
+                de risco</h2>
               <div class="settings-row">
                 <div class="settings-row-info">
                   <label data-i18n="cfg.exportLogs">Exportar todos os logs</label>
@@ -561,7 +575,8 @@ git push -u origin main</pre>
     <!-- Statusbar -->
     <footer class="statusbar">
       <span class="statusbar-vault text-mono" id="statusbar-vault">—</span>
-      <span class="statusbar-run text-mono" id="statusbar-run" data-i18n="statusbar.waiting">aguardando primeira execução</span>
+      <span class="statusbar-run text-mono" id="statusbar-run" data-i18n="statusbar.waiting">aguardando primeira
+        execução</span>
     </footer>
 
   </div><!-- /screen-app -->

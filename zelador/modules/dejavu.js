@@ -2,13 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const http = require('http');
 
 const SIMILARITY_THRESHOLD = 0.88; // alto — só matches reais
-const OLLAMA_HOST = 'http://localhost:11434';
+const OLLAMA_HOST = 'http://127.0.0.1:11434';
 const EMBED_MODEL = 'nomic-embed-text';
 const DEJAVU_CACHE = '.zelador/dejavu.json';
-const SAFE_BUFFER_HOURS = 24;
+const SAFE_BUFFER_HOURS = 168; // 7 dias — mais flexível para testes
 
 function log(msg) {
   const ts = new Date().toTimeString().slice(0, 8);
@@ -19,32 +18,21 @@ function log(msg) {
  * Gera embedding via Ollama.
  */
 async function embed(text) {
-  return new Promise((resolve, reject) => {
-    const body = JSON.stringify({
-      model: EMBED_MODEL,
-      prompt: text.slice(0, 4000),
-    });
-    const options = {
-      hostname: 'localhost', port: 11434,
-      path: '/api/embeddings', method: 'POST',
+  try {
+    const res = await fetch(`${OLLAMA_HOST}/api/embeddings`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-    };
-    const req = http.request(options, res => {
-      let data = '';
-      res.on('data', c => data += c);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.embedding) resolve(parsed.embedding);
-          else reject(new Error('Embedding not found in response'));
-        }
-        catch (e) { reject(e); }
-      });
+      body: JSON.stringify({
+        model: EMBED_MODEL,
+        prompt: text.slice(0, 4000),
+      }),
     });
-    req.on('error', reject);
-    req.setTimeout(30000, () => { req.destroy(); reject(new Error('timeout')); });
-    req.write(body); req.end();
-  });
+    if (!res.ok) throw new Error(`Ollama API error: ${res.statusText}`);
+    const data = await res.json();
+    return data.embedding;
+  } catch (err) {
+    throw err;
+  }
 }
 
 /**

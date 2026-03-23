@@ -5,8 +5,9 @@ const path = require('path');
 const { glob } = require('glob');
 const { readFrontmatter } = require('./frontmatter');
 const { IGNORED_DIRS, SAFETY_BUFFER_MS } = require('../config/defaults');
+const git = require('./git');
 
-function getInactivityMs(filePath, stat) {
+function getInactivityMs(filePath, stat, vaultPath) {
   try {
     const fm = readFrontmatter(filePath).data;
     if (fm.decay_since) {
@@ -16,6 +17,16 @@ function getInactivityMs(filePath, stat) {
       }
     }
   } catch (_) {}
+
+  // Fallback: Tentar data do último commit se for um repo Git
+  if (git.isGitRepo(vaultPath)) {
+    const lastCommitMs = git.getFileLastCommitDate(vaultPath, filePath);
+    if (lastCommitMs) {
+      return Date.now() - lastCommitMs;
+    }
+  }
+
+  // Fallback final: mtime (que pode ser impreciso após um commit Git)
   return Date.now() - stat.mtimeMs;
 }
 
@@ -52,7 +63,7 @@ async function scanVault(vaultPath) {
       continue;
     }
 
-    const inactivityMs = getInactivityMs(filePath, stat);
+    const inactivityMs = getInactivityMs(filePath, stat, vaultPath);
 
     // Buffer de segurança: ignora arquivos modificados nas últimas 24h
     // Protege contra notas que estão sendo editadas agora

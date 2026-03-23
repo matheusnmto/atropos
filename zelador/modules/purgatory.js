@@ -27,7 +27,17 @@ async function getPurgatoryData(vaultPath, config, resolveConfig) {
     if (effectiveConfig.decay_immune) continue;
 
     // Calcular dias restantes até F3
-    const daysInactive = file.inactivityMs / (1000 * 60 * 60 * 24);
+    let inactivityMs = file.inactivityMs;
+
+    // Se a nota tem decay_since no frontmatter, usar essa data — mais confiável que mtime
+    if (fm.decay_since) {
+      const decaySince = new Date(fm.decay_since).getTime();
+      if (!isNaN(decaySince)) {
+        inactivityMs = Date.now() - decaySince;
+      }
+    }
+
+    const daysInactive = inactivityMs / (1000 * 60 * 60 * 24);
     const daysUntilF3 = Math.ceil(effectiveConfig.phase3_days - daysInactive);
 
     // Só incluir se vai fossilizar nos próximos 30 dias

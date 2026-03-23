@@ -33,7 +33,7 @@ function showView(id) {
   if (view) view.classList.add('active');
   if (nav) nav.classList.add('active');
   if (id === 'purgatorio') renderPurgatorio();
-  if (id === 'insights')    refreshInsights();
+  if (id === 'insights') refreshInsights();
   if (id === 'config') loadConfig();
   if (id === 'fossilized') renderFossilized();
   if (id === 'grafo') {
@@ -380,14 +380,14 @@ async function renderFossilized() {
 
 async function renderPurgatorio() {
   const tbody = $('purgatory-tbody');
-  tbody.innerHTML = `<tr><td colspan="5" class="table-empty">Carregando...</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="5" class="table-empty">${window.i18n.t('status.loading')}</td></tr>`;
 
   let items = [];
   try {
     items = await api.getPurgatoryData();
   } catch (err) {
     console.error('renderPurgatorio error:', err);
-    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">Erro ao carregar dados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">${window.i18n.t('status.error')}</td></tr>`;
     return;
   }
   const urgent = items.filter(i => i.dias <= 7);
@@ -470,9 +470,19 @@ async function loadConfig() {
     hourSel.value = c.schedule?.hour ?? 3;
     minSel.value = c.schedule?.minute ?? 0;
 
-    $('cfg-provider').value = c.provider || 'anthropic';
-    $('cfg-api-key-section').style.display = c.provider === 'none' ? 'none' : 'flex';
-    $('cfg-active-provider').textContent = c.provider === 'google' ? 'Google Gemini' : 'Anthropic Claude';
+    const prov = c.provider || 'anthropic';
+    $('cfg-provider').value = prov;
+    
+    if (prov === 'none') {
+      $('cfg-api-key-section').style.display = 'none';
+      $('cfg-active-provider').style.display = 'none';
+    } else {
+      $('cfg-api-key-section').style.display = 'flex';
+      $('cfg-active-provider').style.display = 'inline-block';
+      $('cfg-active-provider').textContent = prov === 'google' ? 'Google Gemini' : 'Anthropic Claude';
+      $('cfg-active-provider').className = `provider-badge ${prov}`;
+      await refreshKeyStatus(prov);
+    }
     $('cfg-notify').checked = c.notifications !== false;
 
     // Idioma
@@ -505,17 +515,28 @@ $('cfg-vault-manual')?.addEventListener('input', (e) => {
   if (val) $('cfg-vault-display').textContent = val;
 });
 
-$('cfg-provider').addEventListener('change', async (e) => {
-  const newProv = e.target.value;
-  $('cfg-api-key-section').style.display = newProv === 'none' ? 'none' : 'flex';
-
-  api.setConfig({ provider: newProv });
-  $('cfg-active-provider').textContent = newProv;
-  $('cfg-active-provider').className = `provider-badge ${newProv}`;
-});
 $('cfg-provider')?.addEventListener('change', async (e) => {
-  $('cfg-active-provider').textContent = e.target.value === 'google' ? 'Google Gemini' : 'Anthropic Claude';
-  await refreshKeyStatus(e.target.value);
+  const newProv = e.target.value;
+  const badge = $('cfg-active-provider');
+  const apiKeySection = $('cfg-api-key-section');
+
+  if (newProv === 'none') {
+    if (apiKeySection) apiKeySection.style.display = 'none';
+    if (badge) {
+      badge.style.display = 'none';
+      badge.textContent = '';
+    }
+  } else {
+    if (apiKeySection) apiKeySection.style.display = 'flex';
+    if (badge) {
+      badge.style.display = 'inline-block';
+      badge.textContent = newProv === 'google' ? 'Google Gemini' : 'Anthropic Claude';
+      badge.className = `provider-badge ${newProv}`;
+    }
+    await refreshKeyStatus(newProv);
+  }
+
+  await api.setConfig({ provider: newProv });
 });
 
 $('cfg-btn-change-key')?.addEventListener('click', () => {
@@ -701,8 +722,17 @@ async function initApp() {
 async function boot() {
   try {
     const config = await api.getConfig();
+
+    // Inicializar idioma (default en-US)
+    const locale = config.language || 'en-US';
+    if (window.i18n) window.i18n.setLocale(locale);
+    applyTranslations();
+
     if (!config.onboarded || !config.vaultPath) {
       showScreen('onboarding');
+      // Sincronizar select de idioma se existir no onboarding
+      const obLangSel = $('ob-language');
+      if (obLangSel) obLangSel.value = locale;
     } else {
       showScreen('app');
       await initApp();
@@ -710,6 +740,7 @@ async function boot() {
   } catch (e) {
     console.error('boot error:', e);
     showScreen('onboarding');
+    applyTranslations();
   }
 }
 
@@ -721,21 +752,21 @@ $('btn-refresh-insights')?.addEventListener('click', () => refreshInsights());
 async function refreshInsights() {
   const btn = $('btn-refresh-insights');
   if (btn) btn.disabled = true;
-  
+
   await Promise.all([
     renderDejavuInsights(),
     renderCalendarInsights()
   ]);
-  
+
   if (btn) btn.disabled = false;
 }
 
 async function renderDejavuInsights() {
   const container = $('dejavu-section');
   if (!container) return;
-  
+
   container.innerHTML = `<div class="insight-empty">${window.i18n.t('status.loading')}</div>`;
-  
+
   try {
     const matches = await api.checkDejavu();
     if (!matches || matches.length === 0) {
@@ -788,7 +819,6 @@ async function renderCalendarInsights() {
     container.innerHTML = accelerated.map(n => `
       <div class="insight-card">
         <div class="insight-header">
-          <span class="insight-icon">⌛</span>
           <span class="insight-title">${n.name}</span>
           <span class="insight-badge">${n.multiplier}x faster decay</span>
         </div>
