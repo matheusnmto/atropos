@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Logger interno do módulo de Git
@@ -13,22 +13,35 @@ function log(msg) {
 }
 
 /**
-* Executa um comando git no vault com timeout de 30s.
-* Retorna stdout como string. Lança erro em qualquer falha não tratada.
-*
-* @param {string} cmd - Comando git (ex: 'status --porcelain')
-* @param {string} vaultPath - Diretório de trabalho
-* @returns {string} stdout do comando
-*/
-function execGit(cmd, vaultPath) {
-  const fullCmd = `git ${cmd}`;
-  return execSync(fullCmd, {
+ * Executa um comando git no vault com timeout de 30s.
+ * Retorna stdout como string. Lança erro em qualquer falha não tratada.
+ *
+ * @param {string[]} args - Argumentos do comando git (sem o prefixo 'git')
+ * @param {string} vaultPath - Diretório de trabalho
+ * @returns {string} stdout do comando
+ */
+function execGit(args, vaultPath) {
+  const result = spawnSync('git', args, {
     cwd: vaultPath,
     timeout: 30000,
     encoding: 'utf8',
-    // Separa stderr de stdout para captura de erros limpa
     stdio: ['pipe', 'pipe', 'pipe'],
-  }).toString().trim();
+  });
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  if (result.status !== 0) {
+    const stderr = result.stderr ? result.stderr.toString().trim() : '';
+    const error = new Error(`Git command failed: git ${args.join(' ')}\n${stderr}`);
+    error.status = result.status;
+    error.stdout = result.stdout;
+    error.stderr = result.stderr;
+    throw error;
+  }
+
+  return result.stdout.toString().trim();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -55,7 +68,7 @@ function isGitRepo(vaultPath) {
 */
 function checkCleanStatus(vaultPath) {
   try {
-    const output = execGit('status --porcelain', vaultPath);
+    const output = execGit(['status', '--porcelain'], vaultPath);
     return output.length > 0; // qualquer linha = mudança pendente
   } catch (err) {
     log(`Não foi possível verificar status: ${err.message}`);
@@ -74,7 +87,7 @@ function checkCleanStatus(vaultPath) {
 */
 function getLastCommitHash(vaultPath) {
   try {
-    return execGit('rev-parse --short HEAD', vaultPath);
+    return execGit(['rev-parse', '--short', 'HEAD'], vaultPath);
   } catch (err) {
     // Repositório sem commits ainda
     return null;
@@ -101,7 +114,7 @@ function getLastCommitHash(vaultPath) {
 function commitSnapshot(vaultPath, noteName, phase) {
   // ── Pré-condição: git deve estar instalado ──
   try {
-    execSync('git --version', { timeout: 5000, stdio: 'pipe' });
+    spawnSync('git', ['--version'], { timeout: 5000, stdio: 'pipe' });
   } catch (_) {
     const error = 'Git não encontrado no PATH. Instale em: https://git-scm.com/downloads';
     log(`${error}`);
@@ -116,16 +129,14 @@ function commitSnapshot(vaultPath, noteName, phase) {
   }
 
   const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-  // Escapa aspas no nome da nota para não quebrar o comando shell
-  const safeNoteName = noteName.replace(/"/g, '\\"');
-  const message = `zelador: snapshot pre-${phase} ${date} "${safeNoteName}"`;
+  const message = `zelador: snapshot pre-${phase} ${date} "${noteName}"`;
 
   try {
     // Stage de todas as mudanças (novas, modificadas, deletadas)
-    execGit('add -A', vaultPath);
+    execGit(['add', '-A'], vaultPath);
 
     // Tentativa de commit
-    execGit(`commit -m "${message}"`, vaultPath);
+    execGit(['commit', '-m', message], vaultPath);
 
     const commitHash = getLastCommitHash(vaultPath);
     log(`Snapshot commitado: ${commitHash} — ${message}`);
