@@ -1,6 +1,11 @@
 ---
-decay_level: 2
-decay_since: 2025-12-20T00:00:00.000Z
+decay_level: 3
+status: fossilized
+fossilized_at: 2026-03-23
+original_path: _fossilized/2026-03/NOTA 3.md
+decay_immune: true
 ---
 
-Conteúdo para teste de dissolução.
+> [!fossil] Nota dissolvida em 23/03/2026
+>**Resumo:** Este é um conteúdo efêmero para teste de dissolução.
+> [Recuperar nota original](_fossilized/2026-03/NOTA 3.md)

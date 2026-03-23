@@ -486,7 +486,7 @@ body.platform-linux #custom-titlebar {
   border-bottom: 0.5px solid var(--border-subtle);
   color: var(--text-secondary);
 }
-.table-empty { color: var(--text-tertiary); font-style: italic; padding: 24px 12px !important; text-align: center; }
+.table-empty { color: var(--text-tertiary); font-style: italic; padding: 24px 12px !important; text-align: left; }
 .row-urgent td  { background: rgba(153,60,29,0.05); }
 .note-link { color: #7F77DD; cursor: pointer; transition: color var(--transition-fast); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
 .note-link:hover { color: #AFA9EC; }

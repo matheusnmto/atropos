@@ -1,0 +1,58 @@
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const { DEFAULTS, DECAY_CONFIG_FILE } = require('../config/defaults');
+
+/**
+ * Lê decay.config.json, com fallback para defaults globais
+ * 
+ * @param {string} vaultPath 
+ * @returns {Object}
+ */
+function loadConfig(vaultPath) {
+  const configPath = path.join(vaultPath, DECAY_CONFIG_FILE);
+
+  if (!fs.existsSync(configPath)) {
+    return { global: DEFAULTS, folders: {} };
+  }
+
+  try {
+    const raw = fs.readFileSync(configPath, 'utf8');
+    const parsed = JSON.parse(raw);
+    parsed.global = { ...DEFAULTS, ...(parsed.global || {}) };
+    return parsed;
+  } catch (err) {
+    return { global: DEFAULTS, folders: {} };
+  }
+}
+
+/**
+ * Determina a config efetiva percorrendo a hierarquia de pastas
+ * 
+ * @param {string} relativePath 
+ * @param {Object} config 
+ * @returns {Object}
+ */
+function resolveConfig(relativePath, config) {
+  const segments = relativePath.split('/').slice(0, -1);
+  const prefixes = [];
+
+  for (let i = segments.length; i > 0; i--) {
+    prefixes.push(segments.slice(0, i).join('/') || '/');
+  }
+
+  for (const prefix of prefixes) {
+    const folderConfig = config.folders && config.folders[prefix];
+    if (folderConfig) {
+      if (folderConfig.decay_immune === true) {
+        return { ...config.global, decay_immune: true };
+      }
+      return { ...config.global, ...folderConfig };
+    }
+  }
+
+  return { ...config.global };
+}
+
+module.exports = { loadConfig, resolveConfig };

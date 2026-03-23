@@ -210,10 +210,9 @@ api.onStatusChange((data) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD — métricas e barra de saúde
 // ══════════════════════════════════════════════════════════════════════════════
-// Dados stub até o IPC de métricas ser implementado na Etapa 4
-const STUB_METRICS = { alive: 42, f1: 8, f2: 3, f3: 1, fossil: 2 };
 
 function renderHealthBar(data) {
+  if (!data) return;
   const total = data.alive + data.f1 + data.f2 + data.f3 + data.fossil || 1;
   const pct   = (v, cls) => `<div class="decay-bar-seg ${cls}" style="width:${(v/total*100).toFixed(1)}%"></div>`;
 
@@ -234,7 +233,7 @@ function renderHealthBar(data) {
     dot('var(--color-fossil)', `${data.fossil} fósseis`),
   ].join('');
 
-  $('m-total').textContent   = total;
+  $('m-total').textContent   = data.total;
   $('m-alive').textContent   = data.alive;
   $('m-alive-pct').textContent = `${Math.round(data.alive/total*100)}%`;
   $('m-decaying').textContent = data.f1 + data.f2 + data.f3;
@@ -243,13 +242,17 @@ function renderHealthBar(data) {
 }
 
 async function loadDashboard() {
-  renderHealthBar(STUB_METRICS);
   try {
+    const metrics = await api.getMetrics();
+    if (metrics) renderHealthBar(metrics);
+    
     const cfg = await api.getConfig();
     const vaultName = cfg.vaultPath ? cfg.vaultPath.split('/').pop() : 'vault';
     $('dash-subtitle').textContent = vaultName;
     $('statusbar-vault').textContent = cfg.vaultPath || '—';
-  } catch (e) { console.error(e); }
+  } catch (e) {
+    console.error('loadDashboard error:', e);
+  }
 }
 
 // ── Activity (via logs) ────────────────────────────────────────────────────
@@ -345,15 +348,19 @@ async function renderFossilized() {
 // ══════════════════════════════════════════════════════════════════════════════
 // PURGATÓRIO
 // ══════════════════════════════════════════════════════════════════════════════
-// Stub — dados virão do IPC de scanner na Etapa 4
-const STUB_PURG = [
-  { nota: 'Rascunho Post Blog', pasta: '/fleeting', dissolve: '2026-03-22', dias: 1 },
-  { nota: 'Ideia App Restaurante', pasta: '/ideas', dissolve: '2026-04-08', dias: 18 },
-  { nota: 'Links Artigos', pasta: '/fleeting', dissolve: '2026-04-18', dias: 28 },
-];
 
-function renderPurgatorio() {
-  const items = STUB_PURG.sort((a,b) => a.dias - b.dias);
+async function renderPurgatorio() {
+  const tbody = $('purgatory-tbody');
+  tbody.innerHTML = `<tr><td colspan="5" class="table-empty">Carregando...</td></tr>`;
+
+  let items = [];
+  try {
+    items = await api.getPurgatoryData();
+  } catch (err) {
+    console.error('renderPurgatorio error:', err);
+    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">Erro ao carregar dados</td></tr>`;
+    return;
+  }
   const urgent = items.filter(i => i.dias <= 7);
 
   const t = window.i18n.t;
@@ -370,7 +377,6 @@ function renderPurgatorio() {
     $('purg-badge').classList.add('hidden');
   }
 
-  const tbody = $('purgatory-tbody');
   if (!items.length) {
     tbody.innerHTML = `<tr><td colspan="5" class="table-empty">${t('purg.empty')}</td></tr>`;
     return;

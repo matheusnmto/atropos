@@ -131,6 +131,38 @@ function register(ipcMain, getStatusFn, runNowFn, store) {
     }
   });
 
+  // ── Purgatório e Métricas (Dados Reais para o Dashboard) ──────────────────
+  ipcMain.handle('purgatory:get-data', async () => {
+    if (!store) return [];
+    const vaultPath = store.get('vaultPath');
+    if (!vaultPath) return [];
+
+    try {
+      const { getPurgatoryData } = require(path.join(__dirname, '../../zelador/modules/purgatory'));
+      const { loadConfig, resolveConfig } = require(path.join(__dirname, '../../zelador/modules/configLoader'));
+      
+      const config = loadConfig(vaultPath);
+      return await getPurgatoryData(vaultPath, config, resolveConfig);
+    } catch (err) {
+      console.error('[ipc] Erro ao buscar dados do purgatório:', err);
+      return [];
+    }
+  });
+
+  ipcMain.handle('metrics:get-data', async () => {
+    if (!store) return null;
+    const vaultPath = store.get('vaultPath');
+    if (!vaultPath) return null;
+
+    try {
+      const { getVaultMetrics } = require(path.join(__dirname, '../../zelador/modules/metrics'));
+      return await getVaultMetrics(vaultPath);
+    } catch (err) {
+      console.error('[ipc] Erro ao buscar métricas:', err);
+      return null;
+    }
+  });
+
   // ── Integração Obsidian ──────────────────────────────────────────────────
   ipcMain.handle('obsidian:open', async (_, filePath) => {
     if (!store) return { success: false, error: 'No store' };

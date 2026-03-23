@@ -1,6 +1,6 @@
 'use strict';
 
-async function generatePurgatory(vaultPath, config, resolveConfig) {
+async function getPurgatoryData(vaultPath, config, resolveConfig) {
   const fs = require('fs');
   const path = require('path');
   const { scanVault, getRelativePath } = require('./scanner');
@@ -45,21 +45,29 @@ async function generatePurgatory(vaultPath, config, resolveConfig) {
     ).toLocaleDateString('pt-BR');
 
     atRisk.push({
-      name: noteName,
+      nota: noteName,
       filePath: file.filePath,
       relativePath,
-      folder: folder || '/',
-      daysUntilF3,
-      dissolutionDate,
+      pasta: folder || '/',
+      dias: daysUntilF3,
+      dissolve: dissolutionDate,
       decayLevel: fm.decay_level || 0,
     });
   }
 
   // Ordenar por urgência (menos dias primeiro)
-  atRisk.sort((a, b) => a.daysUntilF3 - b.daysUntilF3);
+  atRisk.sort((a, b) => a.dias - b.dias);
+  return atRisk;
+}
 
-  const urgent = atRisk.filter(n => n.daysUntilF3 <= 7);
-  const thisMonth = atRisk.filter(n => n.daysUntilF3 > 7 && n.daysUntilF3 <= 30);
+async function generatePurgatory(vaultPath, config, resolveConfig) {
+  const fs = require('fs');
+  const path = require('path');
+  
+  const atRisk = await getPurgatoryData(vaultPath, config, resolveConfig);
+
+  const urgent = atRisk.filter(n => n.dias <= 7);
+  const thisMonth = atRisk.filter(n => n.dias > 7 && n.dias <= 30);
 
   // Gerar o markdown
   const now = new Date().toLocaleDateString('pt-BR', {
@@ -91,12 +99,12 @@ async function generatePurgatory(vaultPath, config, resolveConfig) {
       lines.push('| Nota | Pasta | Dissolução | Restam |');
       lines.push('|------|-------|------------|--------|');
       for (const n of urgent) {
-        const restam = n.daysUntilF3 <= 0
+        const restam = n.dias <= 0
           ? 'hoje'
-          : n.daysUntilF3 === 1
+          : n.dias === 1
             ? '1 dia'
-            : `${n.daysUntilF3} dias`;
-        lines.push(`| [[${n.name}]] | ${n.folder} | ${n.dissolutionDate} | ${restam} |`);
+            : `${n.dias} dias`;
+        lines.push(`| [[${n.nota}]] | ${n.pasta} | ${n.dissolve} | ${restam} |`);
       }
       lines.push('');
     }
@@ -107,7 +115,7 @@ async function generatePurgatory(vaultPath, config, resolveConfig) {
       lines.push('| Nota | Pasta | Dissolução | Restam |');
       lines.push('|------|-------|------------|--------|');
       for (const n of thisMonth) {
-        lines.push(`| [[${n.name}]] | ${n.folder} | ${n.dissolutionDate} | ${n.daysUntilF3} dias |`);
+        lines.push(`| [[${n.nota}]] | ${n.pasta} | ${n.dissolve} | ${n.dias} dias |`);
       }
       lines.push('');
     }
@@ -124,4 +132,4 @@ async function generatePurgatory(vaultPath, config, resolveConfig) {
   return { items: atRisk.length, urgent: urgent.length };
 }
 
-module.exports = { generatePurgatory };
+module.exports = { generatePurgatory, getPurgatoryData };

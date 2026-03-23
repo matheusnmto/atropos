@@ -9,6 +9,7 @@ const { scanVault, getRelativePath, getNoteTitle } = require('./modules/scanner'
 const { readFrontmatter, isDecayImmune, getDecayLevel } = require('./modules/frontmatter');
 const { determinePhase, applyPhase1, applyPhase2, applyPhase3, updateState } = require('./modules/phases');
 const { generatePurgatory } = require('./modules/purgatory');
+const { loadConfig, resolveConfig } = require('./modules/configLoader');
 const syncManager = require('./modules/syncManager');
 const { DEFAULTS, DECAY_CONFIG_FILE, ZELADOR_DIR } = require('./config/defaults');
 
@@ -22,55 +23,6 @@ function log(msg) {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// loadConfig — Lê decay.config.json, com fallback para defaults globais
-// ─────────────────────────────────────────────────────────────────────────────
-function loadConfig() {
-  const configPath = path.join(VAULT_PATH, DECAY_CONFIG_FILE);
-
-  if (!fs.existsSync(configPath)) {
-    return { global: DEFAULTS, folders: {} };
-  }
-
-  try {
-    const raw = fs.readFileSync(configPath, 'utf8');
-    const parsed = JSON.parse(raw);
-    // Garante que global sempre existe com todos os campos
-    parsed.global = {...DEFAULTS,...(parsed.global || {}) };
-    return parsed;
-  } catch (err) {
-    log(`Erro ao ler decay.config.json: ${err.message}. Usando defaults.`);
-    return { global: DEFAULTS, folders: {} };
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// resolveConfig — Determina a config efetiva percorrendo a hierarquia de pastas
-//
-// Exemplo: /fleeting/ideias/nota.md
-//   verifica: /fleeting/ideias → /fleeting → global
-//   usa a primeira regra encontrada
-// ─────────────────────────────────────────────────────────────────────────────
-function resolveConfig(relativePath, config) {
-  const segments = relativePath.split('/').slice(0, -1);
-  const prefixes = [];
-
-  for (let i = segments.length; i > 0; i--) {
-    prefixes.push(segments.slice(0, i).join('/') || '/');
-  }
-
-  for (const prefix of prefixes) {
-    const folderConfig = config.folders && config.folders[prefix];
-    if (folderConfig) {
-      if (folderConfig.decay_immune === true) {
-        return {...config.global, decay_immune: true };
-      }
-      return {...config.global,...folderConfig };
-    }
-  }
-
-  return {...config.global };
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ensureZeladorDir — Cria /.zelador/ se não existe
@@ -94,7 +46,7 @@ async function main() {
   ensureZeladorDir();
 
   // ── Carrega configuração ──
-  const config = loadConfig();
+  const config = loadConfig(VAULT_PATH);
   log(`Configuração: ${Object.keys(config.folders || {}).length} pasta(s) configurada(s).`);
 
   // ── Varre o vault ──
