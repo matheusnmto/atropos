@@ -142,7 +142,9 @@ function register(ipcMain, getStatusFn, runNowFn, store) {
       const { loadConfig, resolveConfig } = require(path.join(__dirname, '../../zelador/modules/configLoader'));
       
       const config = loadConfig(vaultPath);
-      return await getPurgatoryData(vaultPath, config, resolveConfig);
+      const data = await getPurgatoryData(vaultPath, config, resolveConfig);
+      console.log(`[ipc] purgatory:get-data retornando ${data.length} itens.`);
+      return data;
     } catch (err) {
       console.error('[ipc] Erro ao buscar dados do purgatório:', err);
       return [];

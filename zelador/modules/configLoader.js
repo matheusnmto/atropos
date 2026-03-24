@@ -43,7 +43,10 @@ function resolveConfig(relativePath, config) {
   }
 
   for (const prefix of prefixes) {
-    const folderConfig = config.folders && config.folders[prefix];
+    // Tenta encontrar a config com e sem a barra inicial para ser resiliente
+    const folderConfig = (config.folders && config.folders[prefix]) || 
+                         (config.folders && config.folders[prefix.replace(/^\//, '')]);
+    
     if (folderConfig) {
       if (folderConfig.decay_immune === true) {
         return { ...config.global, decay_immune: true };

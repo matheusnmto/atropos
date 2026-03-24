@@ -3,7 +3,7 @@ tags:
   - teste
   - fleeting
 decay_level: 1
-decay_since: '2026-03-21'
+decay_since: '2026-01-13'
 ---
 
 # Nota Antiga de Teste

@@ -115,7 +115,7 @@ async function main() {
     try {
       // ── FASE 1 ──
       if (phase === 1) {
-        const applied = applyPhase1(filePath, frontmatterData);
+        const applied = applyPhase1(filePath, frontmatterData, inactivityMs);
         if (applied) stats.phase1++;
         else stats.skipped_already++;
 
@@ -125,7 +125,7 @@ async function main() {
           stats.skipped_already++;
           continue;
         }
-        const result = await applyPhase2(filePath, VAULT_PATH, frontmatterData);
+        const result = await applyPhase2(filePath, VAULT_PATH, frontmatterData, inactivityMs);
         if (result.success) {
           stats.phase2++;
           log(`[F2] ${noteTitle}: ${result.filesModified} arquivo(s), ${result.linksRemoved} link(s) removido(s)`);

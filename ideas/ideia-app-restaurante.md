@@ -3,7 +3,7 @@ tags:
   - projeto
   - ideia
 decay_level: 1
-decay_since: '2026-03-21'
+decay_since: '2026-01-13'
 ---
 
 # Ideia App Restaurante

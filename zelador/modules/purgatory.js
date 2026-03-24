@@ -45,21 +45,6 @@ async function getPurgatoryData(vaultPath, config, resolveConfig) {
     // Já fossilizou ou passou do threshold — não incluir
     if (daysUntilF3 < -7) continue;
 
-    console.log(JSON.stringify({
-      nota: path.basename(file.filePath),
-      phase3_days: effectiveConfig.phase3_days,
-      inactivityMs,
-      daysInactive: +(daysInactive.toFixed(1)),
-      daysUntilF3,
-      motivo_exclusao:
-        fm.decay_immune ? 'decay_immune' :
-          fm.status === 'fossilized' ? 'fossilized' :
-            (fm.decay_level || 0) >= 3 ? 'decay_level>=3' :
-              effectiveConfig.decay_immune ? 'config_immune' :
-                daysUntilF3 > 30 ? 'longe_demais' :
-                  daysUntilF3 < -7 ? 'ja_fossilizou' :
-                    'INCLUIDA'
-    }, null, 0));
 
     const noteName = path.basename(file.filePath, '.md');
     let folder = relativePath.split('/').slice(0, -1).join('/');

@@ -51,14 +51,17 @@ function updateState(vaultPath, update) {
 
 /**
  * Garante que decay_since existe no frontmatter.
- * Se não existir, calcula baseado em mtime ou hoje.
+ * Se não existir, calcula baseado na inatividade real.
+ * 
+ * @param {object} currentData 
+ * @param {number} inactivityMs 
  */
-function ensureDecaySince(filePath, currentData) {
+function ensureDecaySince(currentData, inactivityMs) {
   if (currentData.decay_since) return {};
   
-  // Se não tem decay_since, usamos a data de hoje como fallback seguro
-  // (Idealmente usaríamos mtime, mas o mtime pode já ter sido alterado)
-  return { decay_since: toISODate() };
+  // Se não tem decay_since, calculamos a data retroativa baseada na inatividade
+  const lastActivityDate = new Date(Date.now() - inactivityMs);
+  return { decay_since: toISODate(lastActivityDate) };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -69,16 +72,20 @@ function ensureDecaySince(filePath, currentData) {
 /**
 * @param {string} filePath
 * @param {object} currentData - Frontmatter já parseado
+* @param {number} inactivityMs
 * @returns {boolean} true se a fase foi aplicada
 */
-function applyPhase1(filePath, currentData) {
+function applyPhase1(filePath, currentData, inactivityMs) {
   if ((currentData.decay_level ?? 0) >= 1) return false;
 
-  const today = toISODate();
-  writeFrontmatter(filePath, { decay_level: 1, decay_since: today });
+  const lastActivity = toISODate(new Date(Date.now() - inactivityMs));
+  writeFrontmatter(filePath, { 
+    decay_level: 1, 
+    decay_since: lastActivity 
+  });
 
   const log = makeLogger('F1', path.basename(filePath, '.md'));
-  log(`Estiagem iniciada. decay_since: ${today}`);
+  log(`Estiagem iniciada. decay_since (retroativo): ${lastActivity}`);
   return true;
 }
 
@@ -100,9 +107,10 @@ function applyPhase1(filePath, currentData) {
 * @param {string} filePath    - Caminho absoluto da nota decaída
 * @param {string} vaultPath   - Caminho raiz do vault
 * @param {object} frontmatter - Frontmatter já parseado
+* @param {number} inactivityMs
 * @returns {Promise<{ success: boolean, filesModified: number, linksRemoved: number, commitHash: string|null, error: string|null }>}
 */
-async function applyPhase2(filePath, vaultPath, frontmatter) {
+async function applyPhase2(filePath, vaultPath, frontmatter, inactivityMs) {
   const noteName = path.basename(filePath, '.md');
   const log = makeLogger('F2', noteName);
 
@@ -151,7 +159,7 @@ async function applyPhase2(filePath, vaultPath, frontmatter) {
   writeFrontmatter(filePath, {
     decay_level: 2,
     links_removed_at: today,
-    ...ensureDecaySince(filePath, frontmatter),
+    ...ensureDecaySince(frontmatter, inactivityMs),
   });
   log(`Frontmatter atualizado: decay_level=2, links_removed_at=${today}`);
 
@@ -231,7 +239,7 @@ async function applyPhase3(filePath, vaultPath, frontmatterData) {
 
   // Garante que o original fossilizado também tenha decay_since se faltava
   if (!frontmatterData.decay_since) {
-    writeFrontmatter(fossilizedPath, { decay_since: toISODate() });
+    writeFrontmatter(fossilizedPath, { ...ensureDecaySince(frontmatterData, 30 * MS_PER_DAY) }); 
   }
 
   // -- PASSO 6: Registrar no state.json --

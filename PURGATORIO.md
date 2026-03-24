@@ -6,15 +6,10 @@ decay_immune: true
 # Purgatório
 
 > Abrir qualquer nota desta lista reseta o decaimento.
-> Última atualização: 23/03/2026, 20:27
+> Última atualização: 24/03/2026, 02:00
 
 ---
 
-## Este mês
-
-| Nota | Pasta | Dissolução | Restam |
-|------|-------|------------|--------|
-| [[PurgatoryTestFinal]] | / | 10/04/2026 | 18 dias |
-
+**Vault saudável — nenhuma nota em risco nos próximos 30 dias.**
 ---
 *Gerado automaticamente pelo Zelador · Não edite manualmente*
