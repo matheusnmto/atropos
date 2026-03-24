@@ -1,11 +1,22 @@
 ---
-decay_level: 3
-status: fossilized
-fossilized_at: 2026-03-24
-original_path: _fossilized/2026-03/ideia-app-restaurante.md
-decay_immune: true
+tags:
+  - projeto
+  - ideia
+decay_level: 1
+decay_since: '2026-02-02'
 ---
 
-> [!fossil] Nota dissolvida em 24/03/2026
->Resumo não disponível — provedor de IA não configurado.
-> [Recuperar nota original](_fossilized/2026-03/ideia-app-restaurante.md)
+# Ideia App Restaurante
+
+Um conceito para unificar sistemas de gestão de restaurantes em uma única interface modular.
+
+## Links relacionados
+- [[Nota Antiga de Teste]]
+
+
+> [!ai] Conexão Semântica Descoberta
+> [[nota-antiga]] (similaridade: 90%)
+
+
+> [!ai] Conexão Semântica Descoberta
+> [[nota-purgatorio-teste]] (similaridade: 86%)

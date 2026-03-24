@@ -6,7 +6,7 @@ decay_immune: true
 # Purgatório
 
 > Abrir qualquer nota desta lista reseta o decaimento.
-> Última atualização: 24/03/2026, 02:00
+> Última atualização: 24/03/2026, 02:02
 
 ---
 
