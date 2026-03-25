@@ -1,0 +1,11 @@
+{
+  "id": "atropos",
+  "name": "Atropos",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Knowledge decay engine. Notes that are not revisited decay, disconnect, and dissolve.",
+  "author": "Matheus Farah",
+  "authorUrl": "https://github.com/matheusvfarah",
+  "fundingUrl": "https://github.com/matheusvfarah/atropos",
+  "isDesktopOnly": true
+}

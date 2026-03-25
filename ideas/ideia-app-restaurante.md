@@ -2,9 +2,7 @@
 tags:
   - projeto
   - ideia
-decay_level: 2
-decay_since: '2026-02-02'
-links_removed_at: '2026-03-24'
+decay_level: 0
 ---
 
 # Ideia App Restaurante
@@ -16,7 +14,7 @@ Um conceito para unificar sistemas de gestão de restaurantes em uma única inte
 
 
 > [!ai] Conexão Semântica Descoberta
-> [[nota-antiga]] (similaridade: 90%)
+> nota-antiga (similaridade: 90%)
 
 
 > [!ai] Conexão Semântica Descoberta

@@ -1,0 +1,376 @@
+/* ── Atropos Plugin — styles.css ─────────────────────────────────────────── */
+
+/* Design tokens (mirroring the Electron app) */
+.atropos-plugin {
+  --atr-vital:       #1D9E75;
+  --atr-estiagem:    #888780;
+  --atr-desconexao:  #BA7517;
+  --atr-dissolucao:  #993C1D;
+  --atr-fossil:      #444441;
+
+  --atr-bg:          #161616;
+  --atr-surface:     #1e1e1e;
+  --atr-elevated:    #282828;
+
+  --atr-border:      rgba(255, 255, 255, 0.08);
+  --atr-text-1:      #E8E6E0;
+  --atr-text-2:      #9A9890;
+  --atr-text-3:      #5C5A56;
+
+  --atr-radius:      6px;
+  --atr-radius-full: 9999px;
+
+  font-family: var(--font-interface, inherit);
+  color: var(--atr-text-1);
+}
+
+/* ── Sidebar leaf view ──────────────────────────────────────────────────── */
+.atropos-view {
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Header */
+.atropos-view-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.atropos-view-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--atr-text-3);
+}
+
+/* ── Decay bar ──────────────────────────────────────────────────────────── */
+.atropos-health-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--atr-text-3);
+  margin-bottom: 5px;
+  letter-spacing: 0.04em;
+}
+
+.atropos-health-label span:last-child {
+  color: var(--atr-vital);
+  font-weight: 500;
+}
+
+.atropos-decay-bar {
+  display: flex;
+  height: 5px;
+  border-radius: var(--atr-radius-full);
+  overflow: hidden;
+  gap: 2px;
+  margin-bottom: 10px;
+  background: var(--atr-elevated);
+}
+
+.atropos-bar-seg {
+  height: 100%;
+  transition: width 0.4s ease;
+  min-width: 0;
+  border-radius: 2px;
+}
+
+.atropos-bar-vital       { background: var(--atr-vital);      }
+.atropos-bar-estiagem    { background: var(--atr-estiagem);   }
+.atropos-bar-desconexao  { background: var(--atr-desconexao); }
+.atropos-bar-dissolucao  { background: var(--atr-dissolucao); }
+.atropos-bar-fossil      { background: var(--atr-fossil);     }
+
+/* ── Legend ────────────────────────────────────────────────────────────── */
+.atropos-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.atropos-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--atr-radius);
+  background: var(--atr-elevated);
+  transition: background 0.15s ease;
+}
+
+.atropos-legend-row:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.atropos-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.atropos-legend-label {
+  flex: 1;
+  font-size: 12px;
+  color: var(--atr-text-2);
+}
+
+.atropos-legend-count {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--atr-text-1);
+  font-family: var(--font-monospace, monospace);
+}
+
+/* Phase colors */
+.atropos-legend-row.vital      { border-left: 2px solid var(--atr-vital);      }
+.atropos-legend-row.estiagem   { border-left: 2px solid var(--atr-estiagem);   }
+.atropos-legend-row.desconexao { border-left: 2px solid var(--atr-desconexao); }
+.atropos-legend-row.dissolucao { border-left: 2px solid var(--atr-dissolucao); }
+.atropos-legend-row.fossil     { border-left: 2px solid var(--atr-fossil);     }
+
+/* ── Run button ─────────────────────────────────────────────────────────── */
+.atropos-btn-run {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--atr-radius);
+  background: rgba(29, 158, 117, 0.12);
+  border: 1px solid rgba(29, 158, 117, 0.3);
+  color: var(--atr-vital);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  letter-spacing: 0.02em;
+}
+
+.atropos-btn-run:hover {
+  background: rgba(29, 158, 117, 0.2);
+  border-color: rgba(29, 158, 117, 0.5);
+}
+
+.atropos-btn-run:active {
+  background: rgba(29, 158, 117, 0.08);
+}
+
+.atropos-btn-run svg {
+  flex-shrink: 0;
+}
+
+/* ── Pulse animation for running state ──────────────────────────────────── */
+@keyframes atropos-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.atropos-btn-run.running {
+  animation: atropos-pulse 1.4s ease infinite;
+  pointer-events: none;
+}
+
+/* ── Footer / last run ──────────────────────────────────────────────────── */
+.atropos-footer {
+  margin-top: auto;
+  font-size: 10px;
+  color: var(--atr-text-3);
+  font-family: var(--font-monospace, monospace);
+  letter-spacing: 0.03em;
+  padding-top: 8px;
+  border-top: 1px solid var(--atr-border);
+}
+
+/* ── Decay badge on file explorer items ─────────────────────────────────── */
+.atropos-file-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Status bar item ────────────────────────────────────────────────────── */
+.atropos-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.atropos-status-bar:hover {
+  opacity: 1;
+}
+
+.atropos-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--atr-text-3);
+}
+
+.atropos-status-dot.vital      { background: var(--atr-vital);      }
+.atropos-status-dot.estiagem   { background: var(--atr-estiagem);   }
+.atropos-status-dot.desconexao { background: var(--atr-desconexao); }
+.atropos-status-dot.dissolucao { background: var(--atr-dissolucao); }
+
+/* ── Report modal ────────────────────────────────────────────────────────── */
+.atropos-report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.atropos-report-card {
+  padding: 12px;
+  border-radius: var(--atr-radius);
+  background: var(--background-secondary, #1e1e1e);
+  border: 1px solid var(--atr-border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.atropos-report-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--atr-text-3);
+}
+
+.atropos-report-value {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1;
+  font-family: var(--font-monospace, monospace);
+}
+
+.atropos-report-card.phase1 .atropos-report-value { color: var(--atr-estiagem);   }
+.atropos-report-card.phase2 .atropos-report-value { color: var(--atr-desconexao); }
+.atropos-report-card.phase3 .atropos-report-value { color: var(--atr-dissolucao); }
+.atropos-report-card.errors .atropos-report-value { color: var(--atr-text-3);     }
+
+/* ── Clickable legend rows ───────────────────────────────────────────────── */
+.atropos-legend-row.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.atropos-legend-row.clickable:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.atropos-legend-row.clickable:active {
+  background: rgba(255,255,255,0.03);
+}
+
+.atropos-legend-row.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Chevron */
+.atropos-chevron {
+  font-size: 9px;
+  color: var(--atr-text-3);
+  transition: transform 0.18s ease;
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+
+.atropos-legend-row.open .atropos-chevron {
+  transform: rotate(90deg);
+}
+
+/* ── Expandable note list ─────────────────────────────────────────────────── */
+.atropos-note-list {
+  display: none;
+  flex-direction: column;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--atr-border);
+  border-top: none;
+  border-bottom-left-radius: var(--atr-radius);
+  border-bottom-right-radius: var(--atr-radius);
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 2px;
+}
+
+.atropos-note-list.open {
+  display: flex;
+}
+
+.atropos-note-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--atr-border);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.atropos-note-item:last-child {
+  border-bottom: none;
+}
+
+.atropos-note-item:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.atropos-note-item:active {
+  background: rgba(255,255,255,0.02);
+}
+
+.atropos-note-name {
+  flex: 1;
+  font-size: 12px;
+  color: var(--atr-text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.12s ease;
+}
+
+.atropos-note-item:hover .atropos-note-name {
+  color: var(--atr-text-1);
+}
+
+.atropos-note-folder {
+  font-size: 10px;
+  color: var(--atr-text-3);
+  font-family: var(--font-monospace, monospace);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.atropos-note-empty {
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--atr-text-3);
+  font-style: italic;
+}
+
+/* ── Immune row (gold tint) ──────────────────────────────────────────────── */
+.atropos-legend-row.immune {
+  border-left: 2px solid #7F77DD;
+}
+
+.atropos-legend-row.immune .atropos-legend-dot {
+  background: #7F77DD;
+}

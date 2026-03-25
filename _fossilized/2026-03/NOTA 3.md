@@ -1,6 +1,5 @@
 ---
-decay_level: 2
-decay_since: 2025-12-20T00:00:00.000Z
+decay_level: 0
 ---
 
 Conteúdo para teste de dissolução.

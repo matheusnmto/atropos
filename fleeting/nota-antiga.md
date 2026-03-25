@@ -2,11 +2,9 @@
 tags:
   - teste
   - fleeting
-decay_level: 2
-decay_since: '2026-02-02'
-links_removed_at: '2026-03-24'
+decay_level: 0
 ---
-
+`decay_since: 2025-06-01`
 # Nota Antiga de Teste
 
 Esta nota é antiga e deve entrar na Fase 1.

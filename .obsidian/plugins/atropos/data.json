@@ -1,0 +1,9 @@
+{
+  "phase1Days": 30,
+  "phase2Days": 60,
+  "phase3Days": 90,
+  "aiProvider": "none",
+  "apiKey": "",
+  "enableSemanticLinks": false,
+  "immuneFolders": []
+}

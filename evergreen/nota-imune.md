@@ -1,9 +1,10 @@
 ---
-decay_immune: true
-tags: [referencia, perene]
+decay_level: 0
+status: fossilized
+fossilized_at: 2026-03-25
+original_path: _fossilized/2026-03/nota-imune.md
 ---
 
-# Nota Permanente (Imune)
-
-Esta nota nunca deve ser processada pelo Zelador por ter decay_immune: true.
-nota-antiga [[nota-imune]] 
+> [!fossil] Note archived on 2026-03-25
+> **Summary:** No summary available — AI provider not configured.
+> [Recover original note](_fossilized/2026-03/nota-imune.md)

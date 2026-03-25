@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Atropos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ══════════════════ ONBOARDING ══════════════════════════════════════════ -->
+  <div id="screen-onboarding" class="screen">
+    <div class="onboarding-card">
+
+      <!-- Passo 1 -->
+      <div class="onboarding-step active" id="ob-step-1">
+        <div class="ob-logo">
+          <svg viewBox="0 0 52 52" fill="none" width="56" height="56">
+            <circle cx="26" cy="26" r="7" fill="#1D9E75" />
+            <circle cx="26" cy="26" r="14" fill="none" stroke="#1D9E75" stroke-width="1.5" opacity="0.4" />
+            <circle cx="26" cy="26" r="22" fill="none" stroke="#1D9E75" stroke-width="1" opacity="0.15" />
+            <line x1="26" y1="4" x2="26" y2="12" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"
+              opacity="0.70" />
+            <line x1="44.5" y1="14" x2="37.8" y2="17.9" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"
+              opacity="0.55" />
+            <line x1="44.5" y1="38" x2="37.8" y2="34.1" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"
+              opacity="0.40" />
+            <line x1="26" y1="48" x2="26" y2="40" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"
+              opacity="0.25" />
+            <line x1="7.5" y1="38" x2="14.2" y2="34.1" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"
+              opacity="0.15" />
+            <line x1="7.5" y1="14" x2="14.2" y2="17.9" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"
+              opacity="0.08" />
+          </svg>
+        </div>
+        <h1 data-i18n="ob.welcome">Welcome to Atropos</h1>
+        <p class="ob-desc" data-i18n="ob.vaultDesc">Select your Obsidian vault folder to get started.</p>
+
+        <div class="vault-picker">
+          <div class="vault-path-display" id="ob-vault-display" data-i18n="ob.noneSelected">No folder selected</div>
+          <button class="btn-primary" id="ob-btn-pick" data-i18n="ob.selectBtn" onclick="if(window.pickVault) window.pickVault()">Select folder</button>
+        </div>
+        <!-- Campo manual para colar o caminho -->
+        <div class="vault-manual">
+          <span class="ob-or" data-i18n="ob.orPaste">or paste the path manually</span>
+          <input type="text" id="ob-vault-manual" placeholder="/Users/you/Documents/vault" autocomplete="off" />
+        </div>
+
+        <div class="ob-nav">
+          <span></span>
+          <button class="btn-text" id="ob-next-1" disabled data-i18n="ob.continue">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Passo 2 -->
+      <div class="onboarding-step" id="ob-step-2">
+        <h2 data-i18n="ob.providerH">Choose your AI provider</h2>
+        <p class="ob-desc" data-i18n="ob.providerDesc">Used in Phase 3 to compress notes. You use your own key (BYOK).</p>
+
+        <div class="provider-grid">
+          <div class="provider-card selected" id="ob-card-anthropic" data-provider="anthropic">
+            <div class="provider-name">Anthropic Claude</div>
+            <div class="provider-model">claude-haiku-4-5 · ~$0.001/note</div>
+            <span class="provider-tag recommended" data-i18n="ob.recommended">Recommended</span>
+          </div>
+          <div class="provider-card" id="ob-card-google" data-provider="google">
+            <div class="provider-name">Google Gemini</div>
+            <div class="provider-model">gemini-1.5-flash</div>
+            <span class="provider-tag free" data-i18n="ob.freeUntilQuota">Free until quota</span>
+          </div>
+          <div class="provider-card" id="ob-card-none" data-provider="none">
+            <div class="provider-name" data-i18n="ob.noneName">No AI</div>
+            <div class="provider-model" data-i18n="ob.noneModel">Archive without summary</div>
+          </div>
+        </div>
+
+        <div class="ob-nav">
+          <button class="btn-text" id="ob-back-2" data-i18n="ob.back">← Back</button>
+          <button class="btn-primary" id="ob-next-2" data-i18n="ob.next">Next →</button>
+        </div>
+      </div>
+
+      <!-- Passo 3 -->
+      <div class="onboarding-step" id="ob-step-3">
+        <h2 data-i18n="ob.apiKeyH">Enter your API key</h2>
+        <p class="ob-desc" id="ob-key-hint">Get it at console.anthropic.com</p>
+
+        <label class="field-label" data-i18n="ob.apiKeyLabel">Your API key</label>
+        <div class="input-with-action">
+          <input type="password" id="ob-api-key" placeholder="sk-ant-..." autocomplete="off" />
+          <button id="ob-toggle-key" data-i18n="ob.show">show</button>
+        </div>
+        <p class="key-hint" data-i18n="ob.keyHint">The key is stored in the system keychain and never sent to our servers.</p>
+
+        <div id="ob-feedback" class="ob-feedback"></div>
+
+        <div class="ob-nav">
+          <button class="btn-text" id="ob-back-3" data-i18n="ob.back">← Back</button>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-secondary" id="ob-skip-key" data-i18n="ob.skip">Skip for now</button>
+            <button class="btn-primary" id="ob-validate" data-i18n="ob.validate">Validate and enter</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /onboarding-card -->
+
+    <div class="ob-lang-switcher">
+      <select id="ob-language">
+        <option value="en-US">English (US)</option>
+        <option value="pt-BR">Português (BR)</option>
+      </select>
+    </div>
+  </div><!-- /screen-onboarding -->
+
+
+  <!-- ══════════════════ APP ═════════════════════════════════════════════════ -->
+  <div id="screen-app" class="screen hidden">
+
+    <!-- Só visível em Windows/Linux — escondido no macOS via CSS -->
+    <div id="custom-titlebar">
+      <span id="app-title">Atropos</span>
+      <div id="window-controls">
+        <button id="btn-minimize" onclick="window.zelador.minimizeWindow()">
+          <svg width="10" height="1" viewBox="0 0 10 1">
+            <line x1="0" y1="0.5" x2="10" y2="0.5" stroke="currentColor" stroke-width="1" />
+          </svg>
+        </button>
+        <button id="btn-maximize" onclick="window.zelador.maximizeWindow()">
+          <svg width="10" height="10" viewBox="0 0 10 10">
+            <rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1" />
+          </svg>
+        </button>
+        <button id="btn-close" onclick="window.zelador.closeWindow()">
+          <svg width="10" height="10" viewBox="0 0 10 10">
+            <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="1.2" />
+            <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="1.2" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Corpo do app: sidebar + conteúdo -->
+    <div class="app-body">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-drag-zone"></div>
+        <nav class="sidebar-nav">
+          <a class="nav-item active" data-view="dashboard" id="nav-dashboard">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <rect x="1" y="1" width="5" height="5" rx="1" />
+              <rect x="10" y="1" width="5" height="5" rx="1" />
+              <rect x="1" y="10" width="5" height="5" rx="1" />
+              <rect x="10" y="10" width="5" height="5" rx="1" />
+            </svg>
+            <span data-i18n="nav.dashboard">Dashboard</span>
+          </a>
+          <a class="nav-item" data-view="immune" id="nav-immune" title="Immune">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.225 2.129c.42.35.923.546 1.403.546s.983-.196 1.403-.546a10.726 10.726 0 0 0 2.225-2.129c1.527-1.998 2.807-5.03 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453C9.33 15.5 8.665 15.75 8 15.75s-1.33-.25-1.877-.727a11.775 11.775 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
+            </svg>
+            <span data-i18n="nav.immune">Immune</span>
+          </a>
+          <a class="nav-item" data-view="active" id="nav-active" title="Active">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            <span data-i18n="nav.active">Active</span>
+          </a>
+          <a class="nav-item" data-view="purgatorio" id="nav-purgatorio">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 2h14v5l-6 5 6 5v5H5v-5l6-5-6-5V2z"/><path d="M8 21h8"/><path d="M11 11L8 8"/>
+            </svg>
+            <span data-i18n="nav.purgatory">Purgatory</span>
+            <span class="nav-badge hidden" id="purg-badge">0</span>
+          </a>
+          <a class="nav-item" data-view="fossilized" id="nav-fossilized">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 2a4 4 0 110 8A4 4 0 018 4z" opacity=".5" />
+              <circle cx="8" cy="8" r="2" />
+            </svg>
+            <span data-i18n="nav.fossilized">Fossilized</span>
+          </a>
+          <a class="nav-item" data-view="grafo" id="nav-grafo">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <circle cx="4" cy="4" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="12" cy="4" r="2" />
+              <line x1="5" y1="5" x2="11" y2="11" stroke="currentColor" />
+              <line x1="12" y1="6" x2="12" y2="10" stroke="currentColor" />
+            </svg>
+            <span data-i18n="nav.grafo">Interactive Graph</span>
+          </a>
+          <a class="nav-item" data-view="insights" id="nav-insights" title="Signals">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
+            </svg>
+            <span data-i18n="nav.insights">Signals</span>
+          </a>
+          <div class="nav-spacer"></div>
+          <a class="nav-item" data-view="config" id="nav-config">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+              <path fill-rule="evenodd"
+                d="M6.94 1h2.12l.4 2a5.5 5.5 0 011.42.83l1.9-.72 1.06 1.84-1.52 1.28a5.5 5.5 0 010 1.54l1.52 1.28-1.06 1.84-1.9-.72a5.5 5.5 0 01-1.42.83l-.4 2H6.94l-.4-2a5.5 5.5 0 01-1.42-.83l-1.9.72L2.16 9.77l1.52-1.28a5.5 5.5 0 010-1.54L2.16 5.67 3.22 3.83l1.9.72A5.5 5.5 0 016.54 3l.4-2z" />
+            </svg>
+            <span data-i18n="nav.settings">Settings</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-status">
+          <div class="status-dot" id="status-dot"></div>
+          <div class="status-info">
+            <span class="status-label" id="status-label" data-i18n="status.loading">Loading...</span>
+            <span class="status-next" id="status-next"></span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Conteúdo principal -->
+      <main class="content">
+
+        <!-- ─── DASHBOARD ─────────────────────────────────────────────────── -->
+        <section class="view active" id="view-dashboard">
+          <div class="screen-header">
+            <div>
+              <h1 class="text-title-lg" data-i18n="nav.dashboard">Dashboard</h1>
+              <p class="text-caption" id="dash-subtitle" data-i18n="dash.loadingVault">loading vault...</p>
+            </div>
+            <button class="btn-run" id="btn-run-now">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 1.5l9 4.5-9 4.5z" /></svg>
+              <span data-i18n="dash.runNow">Run now</span>
+            </button>
+          </div>
+
+          <!-- Duas colunas: métricas (60%) + atividade (40%) -->
+          <div class="dashboard-grid">
+            <div class="dashboard-left">
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <span class="metric-label" data-i18n="dash.totalNotes">Total notes</span>
+                  <span class="metric-value" id="m-total">—</span>
+                </div>
+                <div class="metric-card clickable" data-nav="active">
+                  <span class="metric-label" data-i18n="dash.active">Active</span>
+                  <span class="metric-value" id="m-alive" style="color:var(--color-vital)">—</span>
+                  <span class="metric-sub" id="m-alive-pct"></span>
+                </div>
+                <div class="metric-card clickable" data-nav="purgatorio">
+                  <span class="metric-label" data-i18n="dash.decaying">Decaying</span>
+                  <span class="metric-value" id="m-decaying" style="color:var(--color-desconexao)">—</span>
+                </div>
+                <div class="metric-card clickable" data-nav="fossilized">
+                  <span class="metric-label" data-i18n="dash.fossilized">Fossilized</span>
+                  <span class="metric-value" id="m-fossil" style="color:var(--color-fossil)">—</span>
+                </div>
+                <div class="metric-card clickable" data-nav="immune">
+                  <span class="metric-label" data-i18n="dash.immune">Immune</span>
+                  <span class="metric-value" id="m-immune" style="color:#7F77DD">—</span>
+                </div>
+              </div>
+
+              <!-- Barra de saúde -->
+              <div class="vault-health">
+                <div class="vault-health-header">
+                  <span class="text-label" data-i18n="dash.vaultHealth">saúde do vault</span>
+                  <span class="text-caption" id="health-pct" style="color:var(--color-vital)">—</span>
+                </div>
+                <div class="decay-bar" id="healthBar"></div>
+                <div class="decay-legend" id="healthLegend"></div>
+              </div>
+            </div>
+
+            <!-- Atividade recente -->
+            <div class="activity-panel">
+              <h2 class="text-label" style="margin-bottom:12px" data-i18n="dash.activity">recent activity</h2>
+              <div class="activity-list" id="activityList">
+                <div class="activity-empty" data-i18n="dash.noActivity">No activity yet.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── PURGATÓRIO ─────────────────────────────────────────────────── -->
+        <section class="view" id="view-purgatorio">
+          <div class="screen-header">
+            <div>
+              <h1 class="text-title-lg" data-i18n="purg.title">Purgatory</h1>
+              <p class="text-caption" data-i18n="purg.desc">Notes condemned to dissolution. Open one in Obsidian to reset decay.</p>
+            </div>
+          </div>
+
+          <div class="urgent-banner hidden" id="urgent-banner">
+            <span>▲</span>
+            <span id="urgent-text" data-i18n="purg.urgentNotes">notas urgentes</span>
+          </div>
+
+          <div class="card-list" id="purgatory-list">
+            <!-- Preenchido via JS -->
+          </div>
+        </section>
+
+        <!-- ─── FOSSILIZADAS ───────────────────────────────────────────────── -->
+        <section class="view" id="view-fossilized">
+          <div class="screen-header">
+            <h1 class="text-title-lg" data-i18n="fossil.title">Fossilized</h1>
+          </div>
+          <p class="text-body" style="margin-bottom:20px"><span data-i18n="fossil.desc">Notes compressed by AI and
+              archived in</span> <code class="inline-code">/_fossilized/</code><span data-i18n="fossil.desc2">.
+              Read-only.</span></p>
+          <div class="fossil-list" id="fossilized-list">
+            <div class="activity-empty" data-i18n="fossil.empty">No fossilized notes yet.</div>
+          </div>
+        </section>
+
+        <!-- ─── GRAFO ───────────────────────────────────────────────────────── -->
+        <section class="view" id="view-grafo" style="position:relative;">
+          <button id="btn-analyze-semantics"
+            style="position:absolute; top:20px; left:20px; z-index:200; background:rgba(14,18,15,0.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(29,158,117,0.45); color:rgba(232,230,224,0.95); box-shadow:0 4px 20px rgba(0,0,0,0.7),0 0 0 1px rgba(29,158,117,0.1); padding:7px 16px; border-radius:20px; font-size:10.5px; font-family:'SF Mono','Fira Code',monospace; font-weight:600; letter-spacing:0.06em; cursor:pointer; pointer-events:auto; transition:all 0.18s ease; display:flex; align-items:center; gap:7px; white-space:nowrap;">
+            <span
+              style="display:inline-block;width:5px;height:5px;background:#1D9E75;border-radius:50%;box-shadow:0 0 6px #1D9E75;flex-shrink:0;"></span>
+            <span data-i18n="graph.analyze">ANALYZE CONNECTIONS</span>
+          </button>
+
+          <div id="graph-container">
+            <!-- tooltip -->
+            <div id="graph-tooltip"
+              style="position:absolute; display:none; background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border-subtle); padding:6px 10px; border-radius:4px; font-size:12px; pointer-events:none; z-index:100;">
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── INSIGHTS ──────────────────────────────────────────────────── -->
+        <section class="view" id="view-insights">
+          <div class="screen-header">
+            <div>
+              <h1 class="text-title-lg" data-i18n="nav.insights">Insights</h1>
+              <p class="text-caption" data-i18n="insig.desc">Descobertas inteligentes sobre o seu vault.</p>
+            </div>
+            <button class="btn-run" id="btn-refresh-insights">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                <path
+                  d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658a.25.25 0 0 1-.41-.192z" />
+              </svg>
+              <span data-i18n="insig.refresh">Refresh</span>
+            </button>
+          </div>
+
+          <div class="insight-section">
+            <div class="insight-section-title" data-i18n="insig.dejavuTitle">Déjà Vu — Ideias Recorrentes</div>
+            <div id="dejavu-section" class="insight-list"></div>
+          </div>
+
+          <div class="insight-section">
+            <div class="insight-section-title" data-i18n="insig.calendarTitle">Calendário — Contexto Expirado</div>
+            <div id="calendar-section" class="insight-list"></div>
+          </div>
+        </section>
+
+        <!-- View: Active Notes -->
+        <section id="view-active" class="view">
+          <div class="screen-header">
+            <div>
+              <h1 class="text-title-lg" data-i18n="active.title">Active Notes</h1>
+              <p class="text-caption" data-i18n="active.desc">Healthy notes being monitored by the cycle.</p>
+            </div>
+          </div>
+
+          <div class="card-list" id="active-list">
+            <!-- Preenchido via JS -->
+          </div>
+
+          <div id="active-empty" class="empty-state hidden">
+            <p data-i18n="active.empty">Nenhuma nota ativa encontrada.</p>
+          </div>
+        </section>
+
+        <!-- View: Immune Notes -->
+        <section id="view-immune" class="view">
+          <div class="screen-header">
+            <div>
+              <h1 class="text-title-lg" data-i18n="immune.title">Immune Notes</h1>
+              <p class="text-caption" data-i18n="immune.desc">Protected notes from decay.</p>
+            </div>
+          </div>
+
+          <div class="card-list" id="immune-list">
+            <!-- Preenchido via JS -->
+          </div>
+
+          <div id="immune-empty" class="empty-state hidden">
+            <p data-i18n="immune.empty">Nenhuma nota imune encontrada.</p>
+          </div>
+        </section>
+
+        <!-- ─── CONFIGURAÇÕES ─────────────────────────────────────────────── -->
+        <section class="view" id="view-config">
+          <div class="screen-header">
+            <h1 class="text-title-lg" data-i18n="cfg.title">Configurações</h1>
+          </div>
+
+          <div class="settings-screen">
+
+            <!-- Vault -->
+            <section class="settings-section">
+              <h2 class="settings-section-title" data-i18n="cfg.vault">Vault</h2>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.vaultPath">Vault folder</label>
+                  <p data-i18n="cfg.vaultPathDesc">Path to the root directory of your Obsidian vault.</p>
+                </div>
+                <div class="settings-row-control">
+                  <div class="path-display" id="cfg-vault-display">not configured</div>
+                  <button class="btn-secondary" id="cfg-btn-pick" data-i18n="cfg.change">Change</button>
+                </div>
+              </div>
+              <!-- Campo manual visível por padrão permitindo colar -->
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.vaultPaste">Or paste the path</label>
+                  <p data-i18n="cfg.vaultPasteDesc">You can paste the path directly here.</p>
+                </div>
+                <div class="settings-row-control" style="flex:1;max-width:320px">
+                  <input type="text" id="cfg-vault-manual" placeholder="/Users/you/Documents/vault"
+                    autocomplete="off" />
+                </div>
+              </div>
+            </section>
+
+            <!-- Agendamento -->
+            <section class="settings-section">
+              <h2 class="settings-section-title" data-i18n="cfg.schedule">Schedule</h2>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.scheduleTime">Run time</label>
+                  <p data-i18n="cfg.scheduleDesc">The Zelador runs automatically at this time every day.</p>
+                </div>
+                <div class="settings-row-control time-picker">
+                  <select id="cfg-hour"></select>
+                  <span class="time-colon">:</span>
+                  <select id="cfg-minute"></select>
+                </div>
+              </div>
+            </section>
+
+            <!-- API de IA -->
+            <section class="settings-section">
+              <h2 class="settings-section-title" data-i18n="cfg.api">AI provider</h2>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.provider">Active provider</label>
+                  <p data-i18n="cfg.providerDesc">Used in Phase 3 to compress fossilized notes.</p>
+                </div>
+                <div class="settings-row-control">
+                  <span class="provider-badge" id="cfg-active-provider">—</span>
+                  <select id="cfg-provider">
+                    <option value="none" data-i18n="cfg.noAi">No AI — archive only</option>
+                    <option value="anthropic">Anthropic Claude</option>
+                    <option value="google">Google Gemini</option>
+                  </select>
+                </div>
+              </div>
+              <div class="settings-row" id="cfg-api-key-section">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.apiKey">API key</label>
+                  <p data-i18n="cfg.apiKeyDesc">Stored in the system keychain. Never sent to external servers.
+                  </p>
+                </div>
+                <div class="settings-row-control">
+                  <span class="key-status" id="cfg-key-status">verifying...</span>
+                  <button class="btn-secondary" id="cfg-btn-change-key" data-i18n="cfg.change">Change</button>
+                  <button class="btn-danger" id="cfg-btn-revoke-key" data-i18n="cfg.revoke">Revoke</button>
+                </div>
+              </div>
+              <!-- Inline key change form -->
+              <div class="key-change-form hidden" id="cfg-key-form">
+                <label class="field-label" id="cfg-key-form-label" data-i18n="cfg.newKey">New Anthropic key</label>
+                <div class="input-with-action" style="max-width:420px">
+                  <input type="password" id="cfg-new-key" placeholder="sk-ant-..." autocomplete="off" />
+                  <button id="cfg-toggle-key" data-i18n="ob.show">show</button>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:10px">
+                  <button class="btn-primary" id="cfg-save-key" data-i18n="cfg.saveKey">Save key</button>
+                  <button class="btn-secondary" id="cfg-cancel-key" data-i18n="cfg.cancelKey">Cancel</button>
+                </div>
+              </div>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.monthlyCost">Estimated cost this month</label>
+                  <p data-i18n="cfg.monthlyCostDesc">Based on dissolutions executed up to today.</p>
+                </div>
+                <div class="settings-row-control">
+                  <span class="text-mono" id="cfg-monthly-cost">0 dissolutions · $0.000</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Idioma -->
+            <section class="settings-section">
+              <h2 class="settings-section-title" data-i18n="cfg.language">Language</h2>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.languageLabel">Interface language</label>
+                  <p data-i18n="cfg.languageDesc">Without restarting.</p>
+                </div>
+                <div class="settings-row-control">
+                  <select id="cfg-language">
+                    <option value="en-US">English (US)</option>
+                    <option value="pt-BR">Português (BR)</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <!-- Notificações -->
+            <section class="settings-section">
+              <h2 class="settings-section-title" data-i18n="cfg.notifications">Notifications</h2>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.notifyRun">Notify on run</label>
+                  <p data-i18n="cfg.notifyDesc">Shows a native notification when the Zelador finishes.</p>
+                </div>
+                <div class="settings-row-control">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="cfg-notify" />
+                    <span class="toggle-track">
+                      <span class="toggle-thumb"></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <!-- Configuração de Sync -->
+            <section class="settings-section">
+              <h2 class="settings-section-title" data-i18n="cfg.syncTitle">Sincronização (Dispositivos)</h2>
+              <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
+                <p data-i18n="cfg.syncDesc" style="color:#5C5A56;font-size:13px;line-height:1.5;margin:0;">Para ativar o
+                  sync entre dispositivos:</p>
+                <ol style="color:#5C5A56;font-size:13px;line-height:1.5;margin:0;padding-left:16px;">
+                  <li data-i18n="cfg.syncStep1">Criar um repositório <strong>PRIVADO</strong> no GitHub para o vault
+                  </li>
+                  <li data-i18n="cfg.syncStep2">No terminal, dentro do vault:</li>
+                </ol>
+                <pre
+                  style="background:#1C1A17;padding:12px;border-radius:6px;font-family:monospace;font-size:11px;color:#1D9E75;margin:0;width:100%;box-sizing:border-box;">git init
+git remote add origin https://github.com/usuario/meu-vault.git
+git add -A && git commit -m "initial vault"
+git push -u origin main</pre>
+                <ol start="3" style="color:#5C5A56;font-size:13px;line-height:1.5;margin:0;padding-left:16px;">
+                  <li data-i18n="cfg.syncStep3">No segundo dispositivo, clonar o repositório como vault</li>
+                  <li data-i18n="cfg.syncStep4">O Grafo Líquido detecta o remote automaticamente</li>
+                </ol>
+                <div
+                  style="background:#BA751722;border:1px solid #BA751766;color:#BA7517;padding:10px;border-radius:6px;font-size:12px;line-height:1.4;margin-top:4px;"
+                  data-i18n="cfg.syncWarning">
+                  <strong>Repositório PRIVADO é fortemente recomendado</strong> — o vault contém notas pessoais e o
+                  conteúdo será enviado para o GitHub.
+                </div>
+                <button class="btn-primary" id="btn-manual-sync" data-i18n="cfg.syncNow"
+                  style="margin-top:8px;">Sincronizar Agora (Pull & Push)</button>
+              </div>
+            </section>
+
+            <!-- Zona de risco -->
+            <section class="settings-section">
+              <h2 class="settings-section-title" style="color:var(--color-dissolucao)" data-i18n="cfg.dangerZone">Danger zone</h2>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.exportLogs">Export all logs</label>
+                  <p data-i18n="cfg.exportDesc">Download the full execution history as JSON.</p>
+                </div>
+                <button class="btn-secondary" id="cfg-btn-export" data-i18n="cfg.export">Export</button>
+              </div>
+              <div class="settings-row">
+                <div class="settings-row-info">
+                  <label data-i18n="cfg.resetAll">Reset all settings</label>
+                  <p data-i18n="cfg.resetDesc">Clears vault path, keys, and schedule. Does not affect vault files.</p>
+                </div>
+                <button class="btn-danger" id="cfg-btn-reset" data-i18n="cfg.reset">Reset</button>
+              </div>
+            </section>
+
+            <div class="settings-save-row">
+              <button class="btn-primary" id="btn-save-config" data-i18n="cfg.save">Save settings</button>
+              <span class="save-feedback" id="save-feedback"></span>
+            </div>
+
+          </div><!-- /settings-screen -->
+        </section>
+
+      </main>
+    </div><!-- /app-body -->
+
+    <!-- Statusbar -->
+    <footer class="statusbar">
+      <span class="statusbar-vault text-mono" id="statusbar-vault">—</span>
+      <span class="statusbar-run text-mono" id="statusbar-run" data-i18n="statusbar.waiting">awaiting first run</span>
+    </footer>
+
+  </div><!-- /screen-app -->
+
+  <script src="../../../node_modules/d3/dist/d3.min.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+  <script src="graph.js"></script>
+</body>
+
+</html>

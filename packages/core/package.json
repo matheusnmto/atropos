@@ -1,0 +1,12 @@
+{
+  "name": "@atropos/core",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "description": "Shared decay logic for Atropos app and plugin",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "gray-matter": "^4.0.3",
+    "glob": "^10.3.0"
+  }
+}

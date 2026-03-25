@@ -1,1 +1,8 @@
-{}
+{
+  "userIgnoreFilters": [
+    "node_modules",
+    "packages/app/node_modules",
+    "packages/core/node_modules",
+    "packages/plugin/node_modules"
+  ]
+}

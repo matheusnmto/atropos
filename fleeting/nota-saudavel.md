@@ -12,7 +12,7 @@ E com heading: nota-alvo-f2.
 
 
 > [!ai] Conexão Semântica Descoberta
-> [[nota-antiga]] (similaridade: 77%)
+> nota-antiga (similaridade: 77%)
 
 
 > [!ai] Conexão Semântica Descoberta

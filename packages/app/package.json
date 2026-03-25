@@ -1,0 +1,26 @@
+{
+  "name": "@atropos/app",
+  "version": "0.1.1",
+  "description": "Atropos — Semantic garbage collector for Obsidian vaults (Electron app)",
+  "private": true,
+  "main": "electron/main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev":   "electron . --dev",
+    "build": "electron-builder --config electron-builder.yml",
+    "zelador": "node zelador/zelador.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheusnmto/liquid-graph.git"
+  },
+  "dependencies": {
+    "@atropos/core": "*",
+    "@google/generative-ai": "^0.24.1",
+    "d3": "^7.9.0",
+    "electron-store": "^6.0.1",
+    "gray-matter": "^4.0.3",
+    "keytar": "^7.9.0"
+  }
+}

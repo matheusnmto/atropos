@@ -1,0 +1,16 @@
+{
+  "name": "@atropos/zelador",
+  "version": "0.1.2",
+  "description": "Zelador — Semantic garbage collector for Obsidian vaults",
+  "main": "zelador.js",
+  "scripts": {
+    "start": "node zelador.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@atropos/core": "*",
+    "dotenv": "^16.0.0"
+  }
+}

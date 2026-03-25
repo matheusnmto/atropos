@@ -1,6 +1,8 @@
 ---
-tags: [zelador, sistema]
-decay_immune: true
+tags:
+  - zelador
+  - sistema
+decay_immune: false
 ---
 
 # Purgatório
@@ -15,7 +17,7 @@ decay_immune: true
 | Nota | Pasta | Dissolução | Restam |
 |------|-------|------------|--------|
 | [[ideia-app-restaurante]] | /ideas | 03/04/2026 | 10 dias |
-| [[nota-antiga]] | /fleeting | 03/04/2026 | 10 dias |
+| nota-antiga | /fleeting | 03/04/2026 | 10 dias |
 
 ---
 *Gerado automaticamente pelo Zelador · Não edite manualmente*

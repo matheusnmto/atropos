@@ -1,69 +1,21 @@
 {
-  "name": "atropos",
-  "version": "0.1.1",
-  "description": "Semantic garbage collector para vaults do Obsidian",
-  "main": "electron/main.js",
-  "license": "MIT",
+  "name": "atropos-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/core",
+    "packages/app",
+    "packages/plugin"
+  ],
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --dev",
-    "build": "electron-builder --mac",
-    "build:all": "electron-builder -mwl",
-    "dist": "electron-builder",
-    "dist:all": "electron-builder --mac --win --linux",
-    "zelador": "node zelador/zelador.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/matheusnmto/liquid-graph.git"
-  },
-  "build": {
-    "appId": "com.atropos.app",
-    "productName": "Atropos",
-    "mac": {
-      "category": "public.app-category.productivity",
-      "icon": "assets/icon.icns",
-      "target": [
-        "dmg",
-        "zip"
-      ]
-    },
-    "win": {
-      "icon": "assets/icon.ico",
-      "target": "nsis"
-    },
-    "linux": {
-      "icon": "assets/icon.png",
-      "target": "AppImage"
-    },
-    "files": [
-      "electron/**",
-      "renderer/**",
-      "zelador/**",
-      "assets/**",
-      "!zelador/node_modules/.cache",
-      "!**/.env"
-    ],
-    "extraResources": [
-      {
-        "from": "zelador",
-        "to": "zelador",
-        "filter": [
-          "**/*",
-          "!node_modules/.cache"
-        ]
-      }
-    ]
+    "start":        "npm start --workspace=packages/app",
+    "dev":          "npm run dev --workspace=packages/app",
+    "build:app":    "npm run build --workspace=packages/app",
+    "build:plugin": "npm run build --workspace=packages/plugin",
+    "build":        "npm run build:app && npm run build:plugin"
   },
   "devDependencies": {
     "electron": "^28.3.3",
     "electron-builder": "^26.8.1"
-  },
-  "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "d3": "^7.9.0",
-    "electron-store": "^6.0.1",
-    "gray-matter": "^4.0.3",
-    "keytar": "^7.9.0"
   }
 }

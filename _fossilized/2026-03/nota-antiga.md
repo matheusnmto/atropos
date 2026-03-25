@@ -2,8 +2,7 @@
 tags:
   - teste
   - fleeting
-decay_level: 1
-decay_since: '2026-01-13'
+decay_level: 0
 ---
 
 # Nota Antiga de Teste
